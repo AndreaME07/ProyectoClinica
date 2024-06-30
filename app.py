@@ -13,9 +13,9 @@ mysql = MySQL(app)
 def home():
     return render_template('index.html')
 
-@app.route('/admin')
-def admin():
-    return render_template('admin.html')
+@app.route('/admin_registro')
+def admin_registro():
+    return render_template('admin_registro.html')
 
 # Función de login
 @app.route('/accesoLogin', methods=["GET", "POST"])
@@ -31,7 +31,7 @@ def accesoLogin():
         if account:
             session['logueado'] = True
             session['id'] = account[0]  # Usa el índice adecuado según tu base de datos
-            return redirect(url_for('admin'))
+            return redirect(url_for('admin_registro'))
         else:
             flash("RFC o contraseña incorrecta, revisa tus datos", "danger")
             return redirect(url_for('home'))
@@ -44,6 +44,10 @@ def menu():
 @app.route('/menuAdmin')
 def menuAdm():
     return render_template('menuadmin.html')
+
+@app.route('/expedientePaciente')
+def expedientePaciente():
+    return render_template('expedientePaciente.html')
 
 @app.errorhandler(404)
 def paginano(e):
