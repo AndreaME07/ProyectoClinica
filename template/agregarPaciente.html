@@ -1,115 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <title>Document</title>
+    <title>Alta Médicos</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .caja {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 80vh;
-            padding-top: 0px;
-        }
-        .logo {
-            width: 200px;
-            height: 200px;
-        }
         body {
-            background-color: #cde4f3;
+            background-color: #d3e9ff;
+            margin: 0;
+            padding-top: 60px;
+            /* Ajusta este valor según sea necesario */
         }
-        .table-custom {
-            background-color: #8ff2ff; /* Color fondo de la tabla */
-            color: black; /* Color del texto */
-        }
-        .table-custom th {
-            background-color: #8ff2ff; /* Color del encabezado */
-            color: black; /* Color del texto */
-        }
+
         .form-container {
-            max-width: 600px;
-            background-color: #e6f3fa; /* Color del formulario */
+            background-color: #b5e1ff;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px; /* Espacio adicional desde la navbar */
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 0 auto;
+            /* Centra el formulario horizontalmente */
         }
-        .form-control {
-            background-color: #caefff; /* Color del fondo de los inputs */
+
+        .form-container h2 {
+            text-align: center;
+            background-color: #87bfff;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+            margin: -20px -20px 20px -20px;
         }
-        .btn-custom {
-            background-color: #0b6f9e; /* Color del botón */
-            color: rgb(0, 0, 0); /* Color del texto del botón */
+
+        .form-group label {
+            font-weight: bold;
         }
-        .navbar-custom {
-            background-color: #95C8DD; /* Color personalizado de la navbar */
+
+        .btn {
+            width: 100%;
+            background-color: #4ca6ff;
+            border: none;
+        }
+
+        .btn:hover {
+            background-color: #007bff;
         }
     </style>
 </head>
+
 <body>
-    <nav class="navbar navbar-expand-lg navbar-custom">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand">Mayo Clinic</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="#">Clinica Mayo</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ url_for('expedientePaciente') }}">Historial de registros de médicos</a>
-                    </li>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+                    <a class="nav-link" href="/altaMedico">Registro Medicos</a>
+                    <a class="nav-link" href="/altaPaciente">Registro Pacientes</a>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Acciones en base
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Pacientes
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Agregar Paciente</a></li>
-                            <li><a class="dropdown-item" href="#">Editar Paciente</a></li>
-                            <li><a class="dropdown-item" href="#">Hacer cita de exploración</a></li>
-                            <li><a class="dropdown-item" href="#">Buscar citas del paciente</a></li>
+                            <li><a class="dropdown-item" href="/Cita">Citas</a></li>
+                            <li><a class="dropdown-item" href="/editarPaciente">Editar</a></li>
+                            <li><a class="dropdown-item" href="/expedienteP">Expediente</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
                     </li>
-                </ul>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Medicos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/editarMedico">Editar</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                </div>
             </div>
         </div>
     </nav>
-    
-    <div class="container d-flex justify-content-center align-items-center mt-5" style="height: calc(100vh - 56px - 40px);">
-        <div class="form-container">
-            <h2 class="text-center mb-4">Agregar datos del paciente</h2>
-            <form action="#" method="post">
-                <div class="form-group mb-3">
-                    <label for="nombre">Nombre completo:</label>
-                    <input type="text" class="form-control" id="nombre" name="txtNombre">
-                </div>
-                <div class="form-group mb-3">
-                    <label for="fecha">Fecha de nacimiento:</label>
-                    <input type="date" class="form-control" id="fecha" name="txtFecha">
-                </div>
-                <div class="form-group mb-3">
-                    <label for="cronicas">Enfermedades crónicas:</label>
-                    <input type="text" class="form-control" id="cronicas" name="txtCronicas">
-                </div>
-                <div class="form-group mb-3">
-                    <label for="alergias">Alergias:</label>
-                    <input type="text" class="form-control" id="alergias" name="txtAlergias">
-                </div>
-                <div class="form-group mb-3">
-                    <label for="antecedentes">Antecedentes familiares:</label>
-                    <input type="text" class="form-control" id="antecedentes" name="txtAntecedentes">
-                </div>
-                <div class="form-group mb-4">
-                    <label for="estatus">Status del paciente:</label>
-                    <input type="text" class="form-control" id="estatus" name="txtEstatus">
-                </div>
-                <button type="submit" class="btn btn-info w-100 btn-custom">Registrar Paciente</button>
-            </form>
-        </div>
+
+    <div class="form-container">
+        <h2>Editar datos del paciente</h2>
+        <form action="#" method="post">
+            <div class="form-group">
+                <label for="nombre">Nombre completo:</label>
+                <input type="text" class="form-control" id="nombre" name="txtNombre">
+            </div>
+            <div class="form-group">
+                <label for="fecha">Fecha de nacimiento:</label>
+                <input type="date" class="form-control" id="fecha" name="txtFecha">
+            </div>
+            <div class="form-group">
+                <label for="cronicas">Enfermedades crónicas:</label>
+                <input type="text" class="form-control" id="cronicas" name="txtCronicas">
+            </div>
+            <div class="form-group">
+                <label for="alergias">Alergias:</label>
+                <input type="text" class="form-control" id="alergias" name="txtAlergias">
+            </div>
+            <div class="form-group">
+                <label for="antecedentes">Antecedentes familiares:</label>
+                <input type="text" class="form-control" id="antecedentes" name="txtAntecedentes">
+            </div>
+            <div class="form-group">
+                <label for="estatus">Status del paciente:</label>
+                <input type="text" class="form-control" id="estatus" name="txtEstatus">
+            </div>
+            <button type="submit" class="btn btn-info">Registrar Paciente</button>
+        </form>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

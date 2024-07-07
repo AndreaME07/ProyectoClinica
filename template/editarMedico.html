@@ -1,112 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <title>Editar Medico</title>
+    <title>Editar Médicos</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .caja {
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            height: 100vh;
-            padding-top: 50px;
-        }
-        .logo {
-            width: 200px;
-            height: 200px;
-        }
         body {
-            background-color: #cde4f3;
+            background-color: #d3e9ff;
+            margin: 0;
+            padding-top: 70px;
+            /* Ajusta este valor según sea necesario */
         }
+
         .form-container {
-            background-color:  #b9e6fe; /* Cambia el color del formulario a gris claro */
+            background-color: #b5e1ff;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: 0 auto;
+            /* Centra el formulario horizontalmente */
+        }
+
+        .form-container h2 {
+            text-align: center;
+            background-color: #87bfff;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .btn {
+            width: 100%;
+            background-color: #4ca6ff;
+            border: none;
+        }
+
+        .btn:hover {
+            background-color: #007bff;
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" > Mayo Clinic</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="#">Clinica Mayo</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ url_for('admin_menu') }}">Historial de registros de médicos</a>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+                    <a class="nav-link" href="/altaMedico">Registro Medicos</a>
+                    <a class="nav-link" href="/altaPaciente">Registro Pacientes</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Pacientes
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/Cita">Citas</a></li>
+                            <li><a class="dropdown-item" href="/editarPaciente">Editar</a></li>
+                            <li><a class="dropdown-item" href="/expedienteP">Expediente</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
                     </li>
-                </ul>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Medicos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/editarMedico">Editar</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                </div>
             </div>
         </div>
     </nav>
-    
-    <div class="caja">
-        <div class="container">
-            <div class="row justify-content-center align-items-center " style="height: 100%;">
-                <div class="col-md-6 text-center">
-                    <img src="{{ url_for('static', filename='logonegroclinica.jpg') }}" alt="Clinica Mayo" class="logo">
-                </div>
-                <div class="col-md-6">
-                    <div class="container form-container">
-                        <form class="mb-4 mt-4">
-                            <fieldset>
-                                <legend>Editar registro de médicos de médicos</legend>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="rfcInput" class="form-label">RFC:</label>
-                                        <input type="text" id="rfcInput" class="form-control" placeholder="Ingrese RFC">
-                                    </div><!--CIERRA EL DIV PARA EL LABEL DE RFC-->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="nameInput" class="form-label">Nombre:</label>
-                                        <input type="text" id="nameInput" class="form-control" placeholder="Ingrese nombre">
-                                    </div><!--CIERRA EL DIV PARA EL LABEL DE Nombre-->
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="apellidoPInput" class="form-label">Apellido paterno:</label>
-                                        <input type="text" id="apellidoPInput" class="form-control" placeholder="Ingrese apellido paterno">
-                                    </div><!--CIERRA EL DIV PARA EL LABEL DE APELLIDO PATERNO-->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="apellidoMInput" class="form-label">Apellido materno:</label>
-                                        <input type="text" id="apellidoMInput" class="form-control" placeholder="Ingrese apellido materno">
-                                    </div><!--CIERRA EL DIV PARA EL LABEL DE APELLIDO MATERNO-->
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="cedulaInput" class="form-label">Cédula profesional:</label>
-                                        <input type="text" id="cedulaInput" class="form-control" placeholder="Ingrese cédula profesional">
-                                    </div><!--CIERRA EL DIV PARA EL LABEL DE CÉDULA PROFESIONAL-->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="roleInput" class="form-label">Rol:</label>
-                                        <input type="text" id="roleInput" class="form-control" placeholder="Ingrese rol">
-                                    </div><!--CIERRA EL DIV PARA EL LABEL DE ROL-->
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="exampleInputEmail1" class="form-label">Correo electrónico</label>
-                                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Ingrese su correo electrónico">
-                                        <div id="emailHelp" class="form-text"></div>
-                                    </div><!--CIERRA EL DIV PARA EL LABEL DE CORREO ELECTRÓNICO-->
-                                    <div class="col-md-6 mb-3">
-                                        <label for="passwordInput" class="form-label">Contraseña:</label>
-                                        <input type="password" id="passwordInput" class="form-control" placeholder="Ingrese contraseña">
-                                    </div><!--CIERRA EL DIV PARA EL LABEL DE CONTRASEÑA-->
-                                </div>
-                                <button type="submit" class="btn btn-primary">Editar médico</button>
-                            </fieldset>
-                        </form>
-                    </div><!--CIERRA EL DIV PARA EL CONTAINER INTERNO-->
-                </div><!--CIERRA EL DIV PARA EL COL-MD-6-->
-            </div><!--CIERRA EL DIV PARA EL ROW JUSTIFY-CONTENT-CENTER-->
-        </div><!--CIERRA EL DIV PARA EL CONTAINER EXTERNO-->
-    </div><!--CIERRA EL DIV PARA EL CAJA-->
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <div class="form-container">
+        <h2>Editar datos del Médico</h2>
+        <form action="#" method="post">
+            <div class="form-group">
+                <label for="nombre">Nombre completo:</label>
+                <input type="text" class="form-control" id="nombre" name="txtNombre">
+            </div>
+            <div class="form-group">
+                <label for="rfc">RFC:</label>
+                <input type="text" class="form-control" id="rfc" name="txtRFC">
+            </div>
+            <div class="form-group">
+                <label for="cedula">Cédula profesional:</label>
+                <input type="text" class="form-control" id="cedula" name="txtCedula">
+            </div>
+            <div class="form-group">
+                <label for="correo">Correo:</label>
+                <input type="email" class="form-control" id="correo" name="txtCorreo">
+            </div>
+            <button type="submit" class="btn btn-info">Actualizar datos</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
