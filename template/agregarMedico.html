@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title> Agregar Medico</title>
+    <style>
+        .caja {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+            padding-top: 0px;
+        }
+        .logo {
+            width: 200px;
+            height: 200px;
+        }
+        body {
+            background-color: #cde4f3;
+        }
+        .form-container {
+            background-color: #e6f3fa;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px; /* Espacio adicional desde la navbar */
+        }
+
+        .navbar-custom {
+            background-color: #95C8DD; /* Color original de la navbar */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" > Mayo Clinic</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('admin_menu') }}">Historial de registros de médicos</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="caja">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-md-6 text-center">
+                    <img src="{{ url_for('static', filename='logonegroclinica.jpg') }}" alt="Clinica Mayo" class="logo">
+                </div>
+                <div class="col-md-6">
+                    <div class="container form-container">
+                        <form class="mb-4 mt-1">
+                            <fieldset>
+                                <legend>Registro de médicos</legend>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="rfcInput" class="form-label">RFC:</label>
+                                        <input type="text" id="rfcInput" class="form-control" placeholder="Ingrese RFC">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="nameInput" class="form-label">Nombre:</label>
+                                        <input type="text" id="nameInput" class="form-control" placeholder="Ingrese nombre">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="apellidoPInput" class="form-label">Apellido paterno:</label>
+                                        <input type="text" id="apellidoPInput" class="form-control" placeholder="Ingrese apellido paterno">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="apellidoMInput" class="form-label">Apellido materno:</label>
+                                        <input type="text" id="apellidoMInput" class="form-control" placeholder="Ingrese apellido materno">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="cedulaInput" class="form-label">Cédula profesional:</label>
+                                        <input type="text" id="cedulaInput" class="form-control" placeholder="Ingrese cédula profesional">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="roleInput" class="form-label">Rol:</label>
+                                        <input type="text" id="roleInput" class="form-control" placeholder="Ingrese rol">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="exampleInputEmail1" class="form-label">Correo electrónico</label>
+                                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Ingrese su correo electrónico">
+                                        <div id="emailHelp" class="form-text"></div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="passwordInput" class="form-label">Contraseña:</label>
+                                        <input type="password" id="passwordInput" class="form-control" placeholder="Ingrese contraseña">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary"  style="background-color: #0b6f9e;">Agregar médico</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
+
+

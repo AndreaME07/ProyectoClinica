@@ -13,10 +13,6 @@ mysql = MySQL(app)
 def home():
     return render_template('index.html')
 
-@app.route('/admin_registro')
-def admin_registro():
-    return render_template('admin_registro.html')
-
 # Función de login
 @app.route('/accesoLogin', methods=["GET", "POST"])
 def accesoLogin():
@@ -30,8 +26,13 @@ def accesoLogin():
 
         if account:
             session['logueado'] = True
-            session['id'] = account[0]  # Usa el índice adecuado según tu base de datos
-            return redirect(url_for('admin_registro'))
+            session['id'] = account[0]  # Usar indice adecuado de acuerdo a la base de datos en este caso db_clinicamayo
+            session['id_rol'] = account[3]
+
+            if session['id_rol'] == 1:
+                return render_template("admin_menu.html")
+            elif session['id_rol'] == 2:
+                return render_template("expedientePaciente.html")  
         else:
             flash("RFC o contraseña incorrecta, revisa tus datos", "danger")
             return redirect(url_for('home'))
@@ -41,13 +42,53 @@ def accesoLogin():
 def menu():
     return render_template('menu.html')
 
-@app.route('/menuAdmin')
-def menuAdm():
-    return render_template('menuadmin.html')
+@app.route('/admin_menu')
+def admin_menu():
+    return render_template('admin_menu.html')
+
+@app.route('/agregarMedico')
+def agregarMedico():
+    return render_template('agregarMedico.html')
+
+@app.route('/editarMedico')
+def editarMedico():
+    return render_template('editarMedico.html')
+
+@app.route('/buscarMedico')
+def buscarMedico():
+    return render_template('buscarMedico.html')
+
+
+@app.route('/diagnosticopaciente')
+def diagnosticoPaciente():
+    return render_template('diagnosticoPaciente.html')
+
+@app.route('/citaexploracion')
+def citaExploracion():
+    return render_template('citaExploracion.html')
 
 @app.route('/expedientePaciente')
 def expedientePaciente():
     return render_template('expedientePaciente.html')
+
+@app.route('/editarPaciente')
+def editarPaciente():
+    return render_template('editarPaciente.html')
+
+@app.route('/citaPaciente')
+def citaPaciente():
+    return render_template('citaPaciente.html')
+
+@app.route('/agregarPaciente')
+def agregarPaciente():
+    return render_template('agregarPaciente.html')
+
+
+
+#ejemplo de vista
+@app.route('/ejemplo')
+def ejemplo():
+    return render_template('ejemplo.html')
 
 @app.errorhandler(404)
 def paginano(e):

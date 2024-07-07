@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Citas del paciente</title>
+    <style>
+        body {
+            background-color: #cde4f3;
+        }
+
+        .container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #e6f3fa;
+            border-radius: 10px;
+        }
+
+        .title {
+            background-color: #8abbd9;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Clinica Mayo</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+                    <a class="nav-link" href="/altaMedico">Registro Medicos</a>
+                    <a class="nav-link" href="/altaPaciente">Registro Pacientes</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Pacientes
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/Cita">Citas</a></li>
+                            <li><a class="dropdown-item" href="/editarPaciente">Editar</a></li>
+                            <li><a class="dropdown-item" href="/expedienteP">Expediente</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Medicos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/editarMedico">Editar</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="title">
+            <h2>Citas del paciente</h2>
+        </div>
+        <div class="form-group">
+            <label for="nombrePaciente">Nombre del paciente</label>
+            <input type="text" class="form-control" id="nombrePaciente" placeholder="Nombre del paciente">
+        </div>
+        <div class="form-group">
+            <label for="fechaCita">Fecha de cita</label>
+            <input type="date" class="form-control" id="fechaCita">
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Citas del paciente:</h4>
+                <ul class="list-group">
+                    <li class="list-group-item">DD/MM/AAAA</li>
+                    <li class="list-group-item">DD/MM/AAAA</li>
+                    <li class="list-group-item">DD/MM/AAAA</li>
+                    <li class="list-group-item">DD/MM/AAAA</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h4>Recetas del paciente</h4>
+                <ul class="list-group">
+                    <li class="list-group-item">RECETA 1</li>
+                    <li class="list-group-item">RECETA 2</li>
+                    <li class="list-group-item">RECETA 3</li>
+                    <li class="list-group-item">RECETA 4</li>
+                    <li class="list-group-item">RECETA 5</li>
+                    <li class="list-group-item">RECETA 6</li>
+                    <li class="list-group-item">RECETA 7</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -36,14 +36,16 @@
                     <h4 class="mb-4">Bienvenido, por favor ingrese sus datos</h4>
                     {% with messages = get_flashed_messages(with_categories=true) %}
                         {% if messages %}
-                            <div class="alert alert-danger">
+                        <div class="alert alert-warning alert-dismissible fade show alert alert-danger " role="alert">
+                            <strong>RFC y/o contraseña incorrecta</strong> Por favor, verifique sus datos
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 {% for category, message in messages %}
                                     <p>{{ message }}</p>
                                 {% endfor %}
                             </div>
                         {% endif %}
                     {% endwith %}
-                    <div class="form-group mb-3">
+                    <div class="form-group mb-3"  >
                         <label for="rfc">RFC</label>
                         <input class="form-control" id="rfc" style="background-color: #caefff;" placeholder="Introduce tu RFC" name="txtrfc" required>
                     </div>
@@ -56,5 +58,6 @@
             </div>
         </div>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
