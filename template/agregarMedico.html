@@ -1,124 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alta Médicos</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #d3e9ff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .form-container {
-            background-color: #b5e1ff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
-        }
-
-        .form-container h2 {
-            text-align: center;
-            background-color: #87bfff;
-            padding: 10px;
-            border-radius: 10px 10px 0 0;
-            margin: -20px -20px 20px -20px;
-        }
-
-        .form-group label {
-            font-weight: bold;
-        }
-
-        .btn {
-            width: 100%;
-            background-color: #4ca6ff;
-            border: none;
-        }
-
-        .btn:hover {
-            background-color: #007bff;
-        }
-    </style>
-</head>
-
-<body>
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Clinica Mayo</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                <div class="navbar-nav">
-                    <a class="nav-link active" aria-current="page" href="#">Inicio</a>
-                    <a class="nav-link" href="/altaMedico">Registro Medicos</a>
-                    <a class="nav-link" href="/altaPaciente">Registro Pacientes</a>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Pacientes
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/Cita">Citas</a></li>
-                            <li><a class="dropdown-item" href="/editarPaciente">Editar</a></li>
-                            <li><a class="dropdown-item" href="/expedienteP">Expediente</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Medicos
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/editarMedico">Editar</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
-                </div>
-            </div>
+{%extends "plantillaAdmin.html"%}
+{%block content%}
+<div class="form-container">
+    <h2>Editar datos del Médico</h2>
+    <form action="/guardarMedico" method="post">
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" class="form-control" id="nombre" name="txtNombre">
         </div>
-    </nav>
-    <div class="form-container">
-        <h2>Agregar datos del Médico</h2>
-        <form action="#" method="post">
-            <div class="form-group">
-                <label for="nombre">Nombre completo:</label>
-                <input type="text" class="form-control" id="nombre" name="txtNombre">
-            </div>
-            <div class="form-group">
-                <label for="rfc">RFC:</label>
-                <input type="text" class="form-control" id="rfc" name="txtRFC">
-            </div>
-            <div class="form-group">
-                <label for="cedula">Cédula profesional:</label>
-                <input type="text" class="form-control" id="cedula" name="txtCedula">
-            </div>
-            <div class="form-group">
-                <label for="correo">Correo:</label>
-                <input type="email" class="form-control" id="correo" name="txtCorreo">
-            </div>
-            <button type="submit" class="btn btn-info">Registrar médico</button>
-        </form>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+        <div class="form-group">
+            <label for="nombre">Apellido Paterno:</label>
+            <input type="text" class="form-control" id="nombre" name="txtApePaterno">
+        </div>
+        <div class="form-group">
+            <label for="nombre">Apellido Materno:</label>
+            <input type="text" class="form-control" id="nombre" name="txtApeMaterno">
+        </div>
+        <div class="form-group">
+            <label for="rfc">RFC:</label>
+            <input type="text" class="form-control" id="rfc" name="txtRFC">
+        </div>
+        <div class="form-group">
+            <label for="cedula">Cédula profesional:</label>
+            <input type="text" class="form-control" id="cedula" name="txtCedula">
+        </div>
+        <div class="form-group">
+            <label for="correo">Correo:</label>
+            <input type="email" class="form-control" id="correo" name="txtCorreo">
+        </div>
+        <div class="form-group">
+            <label for="contraseña">Contraseña:</label>
+            <input type="password" class="form-control" id="contraseña" name="txtContrasena">
+        </div>
+        <div class="form-group">
+            <label for="rol">Rol:</label>
+            <select class="form-control" id="rol" name="txtRol">
+                {%for roles in roles%}
+                <option value="{{roles.0}}" {%if usuario8==roles.id%}selected{%endif%}>{{roles.1}}</option>
+                {%endfor%}
+            </select>
+            <button type="submit" class="btn btn-info">Actualizar datos</button>
+    </form>
+</div>
+{%endblock%}

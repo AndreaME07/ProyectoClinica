@@ -30,8 +30,8 @@
                     <td>{{ usuario.6 }}</td>
                     <td>{{ usuario.7 }}</td>
                     <td>{{ usuario.8 }}</td>
-                    <td><a href="{{ url_for('editarMedico', id=usuario.0) }}" type="button" class="btn btn-warning">Editar</a></td>
-                    <td><a href="/eliminarMedico" onclick="confirmarEliminacion(event,'{{usuario.0}}')" class="btn btn-danger">Borrar</></td>
+                    <td><a href="/editarMedico/{{usuario.0}}" type="button" class="btn btn-warning">Editar</a></td>
+                    <td><button onclick="confirmarEliminacion(event, '{{ usuario.0 }}')" class="btn btn-danger">Borrar</button></td>
                 </tr>
                 {% endfor %}
                 {%else%}
@@ -43,4 +43,17 @@
         </table>
     </div>
 </div>
+<script type="text/javascript">
+    function confirmarEliminacion(event, id) {
+        event.preventDefault(); 
+        var confirmar = confirm("¿Estás seguro de que deseas eliminar este álbum?");//variable y 
+        if (confirmar) {
+
+            var form = document.createElement('form');
+            form.action = '/eliminarMedico/' + id;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
 {% endblock %}

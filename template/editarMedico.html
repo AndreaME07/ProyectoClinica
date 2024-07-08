@@ -1,42 +1,12 @@
 {%extends "plantillaAdmin.html"%}
 {%block content%}
-<style>
-    .form-container {
-        background-color: #b5e1ff;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        width: 400px;
-        margin: 0 auto;
-        margin-top: 15px;
-        /* Centra el formulario horizontalmente */
-    }
-
-    .form-container h2 {
-        text-align: center;
-        background-color: #87bfff;
-        padding: 10px;
-        border-radius: 10px 10px 0 0;
-        margin: -20px -20px 20px -20px;
-    }
-
-    .form-group label {
-        font-weight: bold;
-    }
-
-    .btn {
-        width: 100%;
-        background-color: #4ca6ff;
-        border: none;
-    }
-
-    .btn:hover {
-        background-color: #007bff;
-    }
-</style>
+<script>
+    console.log("{{usuario}}")
+</script>
+{% for usuario in usuario%}
    <div class="form-container">
         <h2>Editar datos del Médico</h2>
-        <form action="" method="post">
+        <form action="/actualizarMedico/{{usuario.0}}" method="POST">
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
                 <input type="text" class="form-control" id="nombre" name="txtNombre" value="{{usuario.2}}">
@@ -63,15 +33,17 @@
             </div>
             <div class="form-group">
                 <label for="contraseña">Contraseña:</label>
-                <input type="password" class="form-control" id="contraseña" name="txtContrasena" value="{{usuario.7}}">
+                <input type="text" class="form-control" id="contraseña" name="txtContrasena" value="{{usuario.7}}">
             </div>
             <div class="form-group">
                 <label for="rol">Rol:</label>
                 <select class="form-control" id="rol" name="txtRol">
-                    <option value="1" {%if usuario8 == 1%}selected{%endif%}>Administrador</option>
-                    <option value="2" {%if usuario.8 == 2%}selected{%endif%}>Médico</option>
+                    {%for roles in roles%}
+                    <option value="{{roles.0}}" {% if usuario.8 == roles.0 %} selected {%endif%}>{{roles.1}}</option>
+                    {%endfor%}
                 </select>
             <button type="submit" class="btn btn-info">Actualizar datos</button>
         </form>
     </div>
+{%endfor%}
 {%endblock%}

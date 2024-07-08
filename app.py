@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, request, session, flash, url_for
 from flask_mysqldb import MySQL
 from create_database import create_database
-
+from functools import wraps
 
 
 app = Flask(__name__, template_folder='template')
@@ -40,13 +40,36 @@ def accesoLogin():
 
                 return redirect(url_for('menu'))
             elif session['id_rol'] == 2:
-                return render_template("expedientePaciente.html")  
+                return redirect(url_for('expedientePaciente'))  
         else:
             flash("RFC o contraseña incorrecta, revisa tus datos", "danger")
-            return redirect(url_for('home'))
+    return render_template('index.html')
 
+#Decorardor de login
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args,**kwargs):
+        if 'logueado' not in session:
+            flash('Acceso denegado, inicia sesión para acceder a esta página', 'danger')
+            return redirect(url_for('accesoLogin'))
+        return f(*args,**kwargs)
+    return decorated_function
+
+#Decorador roles
+def rol_required(*roles):
+    def wrapper(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if session['id_rol'] not in roles:
+                flash('No tienes permisos para acceder a esta página', 'danger')
+                return redirect(url_for('accesoLogin'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return wrapper
 
 @app.route('/menu')
+@login_required
+@rol_required(1)
 def menu():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM Usuario')
@@ -55,14 +78,19 @@ def menu():
 
 #Funciones de crud Medico
 @app.route('/editarMedico/<id>')
+@login_required
+@rol_required(1)
 def editarMedico(id):
-
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM Usuario where id= %s',[id])
     usuario = cur.fetchall()
-    return render_template('editarMedico.html', usuario = usuario)
+    cur.execute('SELECT * FROM Rol')
+    roles = cur.fetchall()
+    return render_template('editarMedico.html', usuario = usuario, roles = roles)
 
-@app.route('/actualizarMedico', methods = ['POST'])
+@app.route('/actualizarMedico/<id>', methods = ['POST'])
+@login_required
+@rol_required(1)
 def actualizarMedico(id):
     if request.method == 'POST':
         nombre = request.form['txtNombre']
@@ -74,24 +102,62 @@ def actualizarMedico(id):
         contrasena = request.form['txtContrasena']
         rol = request.form['txtRol']
         cur = mysql.connection.cursor()
-        cur.execute("UPDATE Usuario SET Nombre = %s, ApellidoPaterno = %s, ApellidoMaterno = %s, RFC = %s, Cedula = %s, Correo = %s, Contrasena = %s, id_Rol = %s WHERE id = %s", (nombre, apellidoPa, apellidoMa, rfc, cedula, correo, contrasena, rol, id))
+        cur.execute("UPDATE Usuario SET Nombre = %s, ApePaterno = %s, ApeMaterno = %s, RFC = %s, CedulaProfesional = %s, Correo = %s, Contrasena = %s, id_Rol = %s WHERE id = %s", (nombre, apellidoPa, apellidoMa, rfc, cedula, correo, contrasena, rol, id))
         mysql.connection.commit()
         flash('Usuario actualizado correctamente')
-        return redirect(url_for('/menu'))
+        return redirect(url_for('menu'))
 
-    
+
 @app.route('/buscarMedico')
 def buscarMedico():
     return render_template('buscarMedico.html')
 
 @app.route('/eliminarMedico/<id>')
+@login_required
+@rol_required(1)
 def eliminarMedico(id):
     cur = mysql.connection.cursor()
-    cur.execute("DELETE FROM Usuario WHERE id = %s", [id])
+    cur.execute('DELETE FROM Usuario WHERE id = %s', [id])
     mysql.connection.commit()
     flash('Usuario eliminado correctamente')
     return redirect(url_for('menu'))
 
+
+@app.route('/altaMedico')
+@login_required
+@rol_required(1)
+def agregarMedico():
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM Rol')
+    roles = cur.fetchall()
+    return render_template('agregarMedico.html',roles = roles)
+
+@app.route('/guardarMedico', methods=["POST"])
+@login_required
+@rol_required(1)
+def guardarMedico():
+    if request.method == 'POST' and 'txtNombre' in request.form and 'txtApePaterno' in request.form and 'txtApeMaterno' in request.form and 'txtRFC' in request.form and 'txtCedula' in request.form and 'txtCorreo' in request.form and 'txtContrasena' in request.form and 'txtRol' in request.form:
+        fnombre = request.form['txtNombre']
+        fapepaterno = request.form['txtApePaterno']
+        fapematerno = request.form['txtApeMaterno']
+        frfc = request.form['txtRFC']
+        fcedula = request.form['txtCedula']
+        fcorreo = request.form['txtCorreo']
+        fcontrasena = request.form['txtContrasena']
+        frol = request.form['txtRol']
+
+        cursor = mysql.connection.cursor()
+        cursor.execute('INSERT INTO Usuario (Nombre, ApePaterno, ApeMaterno, RFC, CedulaProfesional, Correo, Contrasena, id_Rol) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (fnombre, fapepaterno, fapematerno, frfc, fcedula, fcorreo, fcontrasena, frol))
+        mysql.connection.commit()
+        cursor.close()
+        
+        flash('Médico agregado correctamente', 'success')
+        return redirect(url_for('menu'))
+    else:
+        flash('Error al agregar médico', 'error')
+        return redirect(url_for('home'))
+##############################################################################################
+#Funciones de crud Paciente
 @app.route('/diagnosticopaciente')
 def diagnosticoPaciente():
     return render_template('diagnosticoPaciente.html')
@@ -113,35 +179,9 @@ def citaPaciente():
     return render_template('citaPaciente.html')
 
 
-
-
-#ejemplo de vista
-@app.route('/ejemplo')
-def ejemplo():
-    return render_template('ejemplo.html')
-    
-@app.route('/altaMedico')
-def agregarMedico():
-    return render_template('agregarMedico.html')
-
-@app.route('/guardarMedico', methods=["POST"])
-def guardarMedico():
-    if request.method == 'POST' and 'txtNombre' in request.form and 'txtApellido' in request.form and 'txtEspecialidad' in request.form:
-        fnombre = request.form['txtNombre']
-        fapellido = request.form['txtApellido']
-        fespecialidad = request.form['txtEspecialidad']
-
-        cursor = mysql.connection.cursor()
-        cursor.execute('INSERT INTO t_medico (Nombre, Apellido, Especialidad) VALUES (%s, %s, %s)', (fnombre, fapellido, fespecialidad))
-        mysql.connection.commit()
-        flash('Médico agregado correctamente', 'success')
-        return redirect(url_for('admin'))
-    else:
-        flash('Error al agregar médico', 'error')
-        return redirect(url_for('home'))
-    
-
 @app.route('/altaPaciente')
+@login_required
+@rol_required(1,2)
 def agregarPaciente():
     return render_template('agregarPaciente.html')
 
@@ -162,8 +202,14 @@ def guardarPaciente():
         flash('Error al agregar paciente', 'error')
         return redirect(url_for('home'))
 
+
+
+#ejemplo de vista
+@app.route('/ejemplo')
+def ejemplo():
+    return render_template('ejemplo.html')
     
-@app.route('/Cita')
+@app.route('/cita')
 def agregarCita():
     return render_template('citaPaciente.html')
 
