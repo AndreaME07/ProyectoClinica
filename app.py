@@ -1,13 +1,20 @@
 from flask import Flask, render_template, redirect, request, session, flash, url_for
 from flask_mysqldb import MySQL
+from create_database import create_database
+
+
 
 app = Flask(__name__, template_folder='template')
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'db_clinicamayo'
+app.config['MYSQL_UNIX_SOCKET'] = '/opt/lampp/var/mysql/mysql.sock'  
 app.secret_key = 'mysecretkey'
+
 mysql = MySQL(app)
+
+create_database()
 
 @app.route('/')
 def home():
@@ -21,16 +28,17 @@ def accesoLogin():
         fpassword = request.form['txtpassword']
         
         cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM t_login WHERE rfc = %s AND password = %s', (frfc, fpassword))
+        cur.execute('SELECT * FROM Usuario WHERE RFC = %s AND Contrasena = %s', (frfc, fpassword))
         account = cur.fetchone()
 
         if account:
             session['logueado'] = True
             session['id'] = account[0]  # Usar indice adecuado de acuerdo a la base de datos en este caso db_clinicamayo
-            session['id_rol'] = account[3]
+            session['id_rol'] = account[8]
 
             if session['id_rol'] == 1:
-                return render_template("admin_menu.html")
+
+                return redirect(url_for('menu'))
             elif session['id_rol'] == 2:
                 return render_template("expedientePaciente.html")  
         else:
@@ -40,24 +48,49 @@ def accesoLogin():
 
 @app.route('/menu')
 def menu():
-    return render_template('menu.html')
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM Usuario')
+    usuario = cur.fetchall()
+    return render_template('admin_menu.html', usuario = usuario)
 
-@app.route('/admin_menu')
-def admin_menu():
-    return render_template('admin_menu.html')
+#Funciones de crud Medico
+@app.route('/editarMedico/<id>')
+def editarMedico(id):
 
-@app.route('/agregarMedico')
-def agregarMedico():
-    return render_template('agregarMedico.html')
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM Usuario where id= %s',[id])
+    usuario = cur.fetchall()
+    return render_template('editarMedico.html', usuario = usuario)
 
-@app.route('/editarMedico')
-def editarMedico():
-    return render_template('editarMedico.html')
+@app.route('/actualizarMedico', methods = ['POST'])
+def actualizarMedico(id):
+    if request.method == 'POST':
+        nombre = request.form['txtNombre']
+        apellidoPa = request.form['txtApePaterno']
+        apellidoMa = request.form['txtApeMaterno']
+        rfc = request.form['txtRFC']
+        cedula = request.form['txtCedula']
+        correo = request.form['txtCorreo']
+        contrasena = request.form['txtContrasena']
+        rol = request.form['txtRol']
+        cur = mysql.connection.cursor()
+        cur.execute("UPDATE Usuario SET Nombre = %s, ApellidoPaterno = %s, ApellidoMaterno = %s, RFC = %s, Cedula = %s, Correo = %s, Contrasena = %s, id_Rol = %s WHERE id = %s", (nombre, apellidoPa, apellidoMa, rfc, cedula, correo, contrasena, rol, id))
+        mysql.connection.commit()
+        flash('Usuario actualizado correctamente')
+        return redirect(url_for('/menu'))
 
+    
 @app.route('/buscarMedico')
 def buscarMedico():
     return render_template('buscarMedico.html')
 
+@app.route('/eliminarMedico/<id>')
+def eliminarMedico(id):
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM Usuario WHERE id = %s", [id])
+    mysql.connection.commit()
+    flash('Usuario eliminado correctamente')
+    return redirect(url_for('menu'))
 
 @app.route('/diagnosticopaciente')
 def diagnosticoPaciente():
@@ -79,9 +112,6 @@ def editarPaciente():
 def citaPaciente():
     return render_template('citaPaciente.html')
 
-@app.route('/agregarPaciente')
-def agregarPaciente():
-    return render_template('agregarPaciente.html')
 
 
 
@@ -136,26 +166,6 @@ def guardarPaciente():
 @app.route('/Cita')
 def agregarCita():
     return render_template('citaPaciente.html')
-
-@app.route('/expedienteP')
-def expedientePaciente():
-    return render_template('expedientePaciente.html')
-
-@app.route('/altaPaceinte')
-def agregarPaciente():
-    return render_template('agregarPaciente.html')
-
-@app.route('/editarPaciente')
-def editarPaciente():
-    return render_template('editarPaciente.html')
-    
-@app.route('/altaMedico')
-def agregarMedico():
-    return render_template('agregarMedico.html')
-    
-@app.route('/editarMedico')
-def editarMedico():
-    return render_template('editarMedico.html')
 
 
 @app.errorhandler(404)

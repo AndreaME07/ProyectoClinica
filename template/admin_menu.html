@@ -1,122 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <title>Menu del administrador</title>
-    <style>
-        .caja {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 80vh;
-            padding-top: 0px;
-        }
-
-        .logo {
-            width: 200px;
-            height: 200px;
-        }
-
-        body {
-            background-color: #cde4f3;
-        }
-
-        .table-custom {
-            background-color: #8ff2ff;
-            /* Sirve para el color fondo de la tabla */
-            color: black;
-            /* Sirve para el color del texto */
-        }
-
-        .table-custom th {
-            background-color: #8ff2ff;
-            /* Sirve para el color del encabezado */
-            color: black;
-            /* Sirve para el color del texto */
-        }
-
-        .content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .navbar-custom {
-            background-color: #95C8DD;
-        }
-    </style>
-</head>
-
-<body>
-    <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container-fluid">
-            <a class="navbar-brand">Mayo Clinic</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ url_for('admin_menu') }}">Historial de registros de médicos</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Opciones</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('agregarMedico') }}">Agregar Medico</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('editarMedico') }}">Editar Medico</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="caja">
-        <div class="content">
-            <img src="{{ url_for('static', filename='logonegroclinica.jpg') }}" alt="Clinica Mayo" class="logo">
-            <table class="table table-custom">
-                <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">RFC</th>
-                        <th scope="col">Nombre completo</th>
-                        <th scope="col">Cédula Profesional</th>
-                        <th scope="col">Correo</th>
-                        <th scope="col">Contraseña</th>
-                        <th scope="col">Rol</th>
-                        <th scope="col">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    <tr>
-                        <th scope="row"></th>
-                        <td>MEAA010704TC9</td>
-                        <td>Andrea Alicia Medina Everardo</td>
-                        <td>122042722</td>
-                        <td>andreaamedinae@gmail.com</td>
-                        <td>***********</td>
-                        <td>Médico administrador</td>
-                        <td><button class="btn btn-danger">Borrar</button></td>
-                    </tr>
-                    <tr>
-                        <th scope="row"></th>
-                        <td>MEAA010704TC9</td>
-                        <td>Andrea Alicia Medina Everardo</td>
-                        <td>122042722</td>
-                        <td>andreaamedinae@gmail.com</td>
-                        <td>***********</td>
-                        <td>Médico administrador</td>
-                        <td><button class="btn btn-danger">Borrar</button></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+{% extends "plantillaAdmin.html" %}
+{% block content %}
+<div class="caja">
+    <div class="content">
+        <img src="{{ url_for('static', filename='logonegroclinica.jpg') }}" alt="Clinica Mayo" class="logo">
+        <table class="table table-custom">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">RFC</th>
+                    <th scope="col">Nombre completo</th>
+                    <th scope="col">Cédula Profesional</th>
+                    <th scope="col">Correo</th>
+                    <th scope="col">Contraseña</th>
+                    <th scope="col">Rol</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% if usuario%}
+                {% for usuario in usuario %}
+                <script>
+                    console.log("{{ usuario }}")
+                </script>
+                <tr>
+                    <td></td>
+                    <td>{{ usuario.1 }}</td>
+                    <td>{{ usuario.2 }} {{ usuario.3 }} {{ usuario.4 }}</td>
+                    <td>{{ usuario.5}}</td>
+                    <td>{{ usuario.6 }}</td>
+                    <td>{{ usuario.7 }}</td>
+                    <td>{{ usuario.8 }}</td>
+                    <td><a href="{{ url_for('editarMedico', id=usuario.0) }}" type="button" class="btn btn-warning">Editar</a></td>
+                    <td><a href="/eliminarMedico" onclick="confirmarEliminacion(event,'{{usuario.0}}')" class="btn btn-danger">Borrar</></td>
+                </tr>
+                {% endfor %}
+                {%else%}
+                <tr>
+                    <td colspan="8">No hay registros</td>
+                </tr>
+                {%endif%}
+            </tbody>
+        </table>
     </div>
-</body>
-
-</html>
+</div>
+{% endblock %}
