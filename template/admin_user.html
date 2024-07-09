@@ -1,0 +1,53 @@
+{% extends "plantillaAdmin.html" %}
+{% block content %}
+<div class="caja">
+    <div class="content">
+        <img src="{{ url_for('static', filename='logonegroclinica.jpg') }}" alt="Clinica Mayo" class="logo">
+        <table class="table table-custom">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Fecha de nacimiento</th>
+                    <th>Sexo</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% if paciente%}
+                {% for paciente in paciente %}
+                <tr>
+                    <td></td>
+                    <td>{{ paciente.1 }} {{ paciente.2}} {{paciente.3  }}</td>
+                    <td>{{ paciente.4 }}</td>
+                    {% if paciente.5 == 1 %}
+                    <td>Masculino</td>
+                    {% else %}
+                    <td>Femenino</td>
+                    {% endif %}
+
+                    <td><a href="/editarPaciente/{{paciente.0}}" type="button" class="btn btn-warning">Editar</a></td>
+                    <td><button onclick="confirmarEliminacion(event, '{{paciente.0}}')" class="btn btn-danger">Borrar</button></td>
+                </tr>
+                {% endfor %}
+                {%else%}
+                <tr>
+                    <td colspan="8">No hay registros</td>
+                </tr>
+                {%endif%}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    function confirmarEliminacion(event, id) {
+        event.preventDefault(); 
+        var confirmar = confirm("¿Estás seguro de que deseas eliminar este álbum?");//variable y 
+        if (confirmar) {
+
+            var form = document.createElement('form');
+            form.action = '/eliminarPaciente/' + id;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
+{% endblock %}

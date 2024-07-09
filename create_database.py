@@ -13,6 +13,13 @@ def create_database():
     cursor.execute("CREATE DATABASE IF NOT EXISTS db_clinicamayo")
 
     db.select_db("db_clinicamayo")
+    #Tabla de Sexo
+    cursor.execute("""CREATE TABLE IF NOT EXISTS Sexo(
+                   id INT AUTO_INCREMENT PRIMARY KEY,
+                   Nombre VARCHAR(100) NOT NULL,
+                   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                   )""")
         #Tabla de roles
     cursor.execute("""CREATE TABLE IF NOT EXISTS Rol(
                    id INT AUTO_INCREMENT PRIMARY KEY,
@@ -43,8 +50,10 @@ def create_database():
                    ApePaterno VARCHAR(100) NOT NULL,
                    ApeMaterno VARCHAR(100) NOT NULL,
                    FechaNam DATE NOT NULL,
+                   id_Sexo INT,
                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                   FOREIGN KEY (id_Sexo) REFERENCES Sexo(id)
                    )""")
         #Tabla de Expediente
     cursor.execute("""CREATE TABLE IF NOT EXISTS Expediente(

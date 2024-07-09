@@ -10,6 +10,11 @@ def seed():
     cursor = db.cursor()
     db.select_db("db_clinicamayo")
 
+    #seeder de sexo
+    cursor.execute("""INSERT INTO Sexo (Nombre) VALUES ('Masculino')""")
+    cursor.execute("""INSERT INTO Sexo (Nombre) VALUES ('Femenino')""")
+    
+
     #seeder de roles
     cursor.execute("""INSERT INTO Rol (Nombre) VALUES ('Administrador')""")
     cursor.execute("""INSERT INTO Rol (Nombre) VALUES ('Medico')""")

@@ -40,7 +40,7 @@ def accesoLogin():
 
                 return redirect(url_for('menu'))
             elif session['id_rol'] == 2:
-                return redirect(url_for('expedientePaciente'))  
+                return redirect(url_for('menuPaciente'))  
         else:
             flash("RFC o contraseña incorrecta, revisa tus datos", "danger")
     return render_template('index.html')
@@ -158,6 +158,15 @@ def guardarMedico():
         return redirect(url_for('home'))
 ##############################################################################################
 #Funciones de crud Paciente
+@app.route('/menuPaciente')
+@login_required
+@rol_required(1,2)
+def menuPaciente():
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM Paciente')
+    paciente = cur.fetchall()
+    return render_template('admin_user.html', paciente = paciente)
+
 @app.route('/diagnosticopaciente')
 def diagnosticoPaciente():
     return render_template('diagnosticoPaciente.html')
@@ -170,10 +179,6 @@ def citaExploracion():
 def expedientePaciente():
     return render_template('expedientePaciente.html')
 
-@app.route('/editarPaciente')
-def editarPaciente():
-    return render_template('editarPaciente.html')
-
 @app.route('/citaPaciente')
 def citaPaciente():
     return render_template('citaPaciente.html')
@@ -183,25 +188,68 @@ def citaPaciente():
 @login_required
 @rol_required(1,2)
 def agregarPaciente():
-    return render_template('agregarPaciente.html')
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM Sexo')
+    sexo = cur.fetchall()
+
+    return render_template('agregarPaciente.html', sexo = sexo)
 
 @app.route('/guardarPaciente', methods=["POST"])
+@login_required
+@rol_required(1,2)
 def guardarPaciente():
-    if request.method == 'POST' and 'txtNombre' in request.form and 'txtApellido' in request.form and 'txtEdad' in request.form and 'txtSexo' in request.form:
+    if request.method == 'POST' and 'txtNombre' in request.form and 'txtApePaterno' in request.form and 'txtApeMaterno' in request.form and 'txtFecha' in request.form and 'txtSexo' in request.form:
         fnombre = request.form['txtNombre']
-        fapellido = request.form['txtApellido']
-        fedad = request.form['txtEdad']
+        fapePaterno = request.form['txtApePaterno']
+        fapeMaterno = request.form['txtApeMaterno']
+        ffecha = request.form['txtFecha']
         fsexo = request.form['txtSexo']
 
         cursor = mysql.connection.cursor()
-        cursor.execute('INSERT INTO t_paciente (Nombre, Apellido, Edad, Sexo) VALUES (%s, %s, %s, %s)', (fnombre, fapellido, fedad, fsexo))
+        cursor.execute('INSERT INTO Paciente (Nombre, ApePaterno, ApeMaterno, FechaNam, id_Sexo) VALUES (%s, %s, %s, %s, %s)', (fnombre, fapePaterno, fapeMaterno, ffecha, fsexo))
         mysql.connection.commit()
         flash('Paciente agregado correctamente', 'success')
-        return redirect(url_for('admin'))
+        return redirect(url_for('menuPaciente'))
     else:
         flash('Error al agregar paciente', 'error')
         return redirect(url_for('home'))
+    
+@app.route('/editarPaciente/<id>')
+@login_required
+@rol_required(1,2)
+def editarPaciente(id):
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM Paciente where id= %s',[id])
+    paciente = cur.fetchall()
+    cur.execute('SELECT * FROM Sexo')
+    sexo = cur.fetchall()
+    return render_template('editarPaciente.html', paciente = paciente, sexo = sexo)
 
+@app.route('/actualizarPaciente/<id>', methods = ['POST'])
+@login_required
+@rol_required(1,2)
+def actualizarPaciente(id):
+    if request.method == 'POST':
+        nombre = request.form['txtNombre']
+        apellidoPa = request.form['txtApePaterno']
+        apellidoMa = request.form['txtApeMaterno']
+        fecha = request.form['txtFecha']
+        sexo = request.form['txtSexo']
+        cur = mysql.connection.cursor()
+        cur.execute("UPDATE Paciente SET Nombre = %s, ApePaterno = %s, ApeMaterno = %s, FechaNam = %s, id_Sexo = %s WHERE id = %s", (nombre, apellidoPa, apellidoMa, fecha, sexo, id))
+        mysql.connection.commit()
+        flash('Paciente actualizado correctamente')
+        return redirect(url_for('menuPaciente'))
+
+@app.route('/eliminarPaciente/<id>')
+@login_required
+@rol_required(1,2)
+def eliminarPaciente(id):
+    cur = mysql.connection.cursor()
+    cur.execute('DELETE FROM Paciente WHERE id = %s', [id])
+    mysql.connection.commit()
+    flash('Paciente eliminado correctamente')
+    return redirect(url_for('menuPaciente'))
 
 
 #ejemplo de vista

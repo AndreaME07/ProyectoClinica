@@ -112,14 +112,14 @@
                             aria-expanded="false">Opciones</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ url_for('agregarMedico') }}">Agregar Medico</a></li>
-                            <li><a class="dropdown-item" href="">Editar Medico</a></li>
+                            <li><a class="dropdown-item"href="{{ url_for('agregarPaciente') }}">Agregar Paciente</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
                         <a href="{{ url_for('menu') }}" class="nav-link">Registro Medicos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('agregarPaciente') }}">Registro Pacientes</a>
+                        <a class="nav-link" href="{{ url_for('menuPaciente') }}">Registro Pacientes</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
