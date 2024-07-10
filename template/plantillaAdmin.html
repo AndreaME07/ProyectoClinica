@@ -125,9 +125,9 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">Pacientes</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="">Citas</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('citaPaciente') }}">Citas</a></li>
                             <li><a class="dropdown-item" href="/editarPaciente">Editar</a></li>
-                            <li><a class="dropdown-item" href="/expedienteP">Expediente</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('diagnosticoPaciente') }}">Expediente</a></li>
                         </ul>
                     </li>
                 </ul>
