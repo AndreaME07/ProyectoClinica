@@ -22,7 +22,6 @@
             width: 400px;
             margin: 0 auto;
             margin-top: 15px;
-            /* Centra el formulario horizontalmente */
         }
 
         .form-container h2 {
@@ -67,16 +66,12 @@
 
         .table-custom {
             background-color: #8ff2ff;
-            /* Sirve para el color fondo de la tabla */
             color: black;
-            /* Sirve para el color del texto */
         }
 
         .table-custom th {
             background-color: #8ff2ff;
-            /* Sirve para el color del encabezado */
             color: black;
-            /* Sirve para el color del texto */
         }
 
         .content {
@@ -104,26 +99,24 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{{ url_for('menu') }}">Historial de
-                            registros de médicos</a>
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('menu') }}">Historial de registros de médicos</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">Opciones</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Opciones</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('agregarMedico') }}">Agregar Medico</a></li>
-                            <li><a class="dropdown-item"href="{{ url_for('agregarPaciente') }}">Agregar Paciente</a></li>
+                            {% if session['id_rol'] == 1 %}
+                                <li><a class="dropdown-item" href="{{ url_for('agregarMedico') }}">Agregar Médico</a></li>
+                            {% endif %}
+                            {% if session['id_rol'] == 2 %}
+                                <li><a class="dropdown-item" href="{{ url_for('agregarPaciente') }}">Agregar Paciente</a></li>
+                            {% endif %}
                         </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('menu') }}" class="nav-link">Registro Medicos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('menuPaciente') }}">Registro Pacientes</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">Pacientes</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pacientes</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ url_for('citaPaciente') }}">Citas</a></li>
                             <li><a class="dropdown-item" href="/editarPaciente">Editar</a></li>
@@ -135,9 +128,7 @@
         </div>
     </nav>
     {% block content %}
-
     {% endblock %}
-
 </body>
 
 </html>

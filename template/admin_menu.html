@@ -17,7 +17,7 @@
                 </tr>
             </thead>
             <tbody class="table-group-divider">
-                {% if usuario%}
+                {% if usuario %}
                 {% for usuario in usuario %}
                 <script>
                     console.log("{{ usuario }}")
@@ -26,29 +26,30 @@
                     <td></td>
                     <td>{{ usuario.1 }}</td>
                     <td>{{ usuario.2 }} {{ usuario.3 }} {{ usuario.4 }}</td>
-                    <td>{{ usuario.5}}</td>
+                    <td>{{ usuario.5 }}</td>
                     <td>{{ usuario.6 }}</td>
                     <td>{{ usuario.7 }}</td>
                     <td>{{ usuario.8 }}</td>
                     <td><a href="/editarMedico/{{usuario.0}}" type="button" class="btn btn-warning">Editar</a></td>
-                    <td><button onclick="confirmarEliminacion(event, '{{ usuario.0 }}')" class="btn btn-danger">Borrar</button></td>
+                    {% if session['id_rol'] == 1 %}
+                        <td><button onclick="confirmarEliminacion(event, '{{ usuario.0 }}')" class="btn btn-danger">Borrar</button></td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
-                {%else%}
+                {% else %}
                 <tr>
                     <td colspan="8">No hay registros</td>
                 </tr>
-                {%endif%}
+                {% endif %}
             </tbody>
         </table>
     </div>
 </div>
 <script type="text/javascript">
     function confirmarEliminacion(event, id) {
-        event.preventDefault(); 
-        var confirmar = confirm("¿Estás seguro de que deseas eliminar este álbum?");//variable y 
+        event.preventDefault();
+        var confirmar = confirm("¿Estás seguro de que deseas eliminar este paciente?");
         if (confirmar) {
-
             var form = document.createElement('form');
             form.action = '/eliminarMedico/' + id;
             document.body.appendChild(form);

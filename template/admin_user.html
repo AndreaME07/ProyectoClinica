@@ -12,7 +12,7 @@
                 </tr>
             </thead>
             <tbody class="table-group-divider">
-                {% if paciente%}
+                {% if paciente %}
                 {% for paciente in paciente %}
                 <tr>
                     <td></td>
@@ -23,26 +23,26 @@
                     {% else %}
                     <td>Femenino</td>
                     {% endif %}
-
                     <td><a href="/editarPaciente/{{paciente.0}}" type="button" class="btn btn-warning">Editar</a></td>
-                    <td><button onclick="confirmarEliminacion(event, '{{paciente.0}}')" class="btn btn-danger">Borrar</button></td>
+                    {% if session['id_rol'] == 1 %}
+                        <td><button onclick="confirmarEliminacion(event, '{{paciente.0}}')" class="btn btn-danger">Borrar</button></td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
-                {%else%}
+                {% else %}
                 <tr>
                     <td colspan="8">No hay registros</td>
                 </tr>
-                {%endif%}
+                {% endif %}
             </tbody>
         </table>
     </div>
 </div>
 <script type="text/javascript">
     function confirmarEliminacion(event, id) {
-        event.preventDefault(); 
-        var confirmar = confirm("¿Estás seguro de que deseas eliminar este álbum?");//variable y 
+        event.preventDefault();
+        var confirmar = confirm("¿Estás seguro de que deseas eliminar este paciente?");
         if (confirmar) {
-
             var form = document.createElement('form');
             form.action = '/eliminarPaciente/' + id;
             document.body.appendChild(form);
