@@ -33,11 +33,11 @@
             </div>
             <div class="col-md-6">
                 <form class="formulario" action="{{ url_for('accesoLogin') }}" method="post">
+                    <input  type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <h4 class="mb-4">Bienvenido, por favor ingrese sus datos</h4>
                     {% with messages = get_flashed_messages(with_categories=true) %}
                         {% if messages %}
                         <div class="alert alert-warning alert-dismissible fade show alert alert-danger " role="alert">
-                            <strong>RFC y/o contraseña incorrecta</strong> Por favor, verifique sus datos
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 {% for category, message in messages %}
                                     <p>{{ message }}</p>
