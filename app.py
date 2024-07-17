@@ -2,7 +2,42 @@ from flask import Flask, render_template, redirect, request, session, flash, url
 from flask_mysqldb import MySQL
 from create_database import create_database
 from functools import wraps
+from flask_wtf.csrf import CSRFProtect
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash
+# Modelos
+from models.ModelUsers import ModelUser
 
+# Entidades
+from models.entidades.User import User
+
+# Decorador Roles
+def roles_required(allowed_roles):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if 'id' not in session:
+                return redirect(url_for('accesoLogin'))
+            user_role_id = session.get('id_rol')
+            
+            # Convertir el ID de rol a nombre de rol
+            cur = mysql.connection.cursor()
+            cur.execute('SELECT Nombre FROM Rol WHERE id = %s', [user_role_id])
+            result = cur.fetchone()
+            if result:
+                user_role_name = result[0]
+            else:
+                user_role_name = None
+            cur.close()
+            
+            print(f"User role: {user_role_name}, Allowed roles: {allowed_roles}")
+            if user_role_name not in allowed_roles:
+                flash('No tienes permiso para acceder a esta página', 'error')
+                return redirect(url_for('menuPaciente')) 
+            
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
 
 app = Flask(__name__, template_folder='template')
 app.config['MYSQL_HOST'] = 'localhost'
@@ -10,11 +45,17 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'db_clinicamayo'
 app.config['MYSQL_UNIX_SOCKET'] = '/opt/lampp/var/mysql/mysql.sock'  
+app.config['SESION_PERMANENT']= False
 app.secret_key = 'mysecretkey'
 
 mysql = MySQL(app)
-
+login_manager_app = LoginManager(app)
+csrf = CSRFProtect()
 create_database()
+
+@login_manager_app.user_loader
+def load_user(id):
+    return ModelUser.get_by_id(mysql, id)
 
 @app.route('/')
 def home():
@@ -23,74 +64,55 @@ def home():
 # Función de login
 @app.route('/accesoLogin', methods=["GET", "POST"])
 def accesoLogin():
-    if request.method == 'POST' and 'txtrfc' in request.form and 'txtpassword' in request.form:
-        frfc = request.form['txtrfc']
-        fpassword = request.form['txtpassword']
+    if request.method == 'POST':
+        rfc = request.form['txtrfc']
+        password = request.form['txtpassword']
         
-        cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM Usuario WHERE RFC = %s AND Contrasena = %s', (frfc, fpassword))
-        account = cur.fetchone()
-
-        if account:
-            session['logueado'] = True
-            session['id'] = account[0]  # Usar indice adecuado de acuerdo a la base de datos en este caso db_clinicamayo
-            session['id_rol'] = account[8]
-
-            if session['id_rol'] == 1:
-
+        logged_user = ModelUser.login(rfc, mysql)
+        if logged_user is not None:
+            if User.check_password(logged_user.contrasena, password):
+                session['id'] = logged_user.id
+                session['id_rol'] = logged_user.id_rol
+                
+                login_user(logged_user)
                 return redirect(url_for('menu'))
-            elif session['id_rol'] == 2:
-                return redirect(url_for('menuPaciente'))  
+            else:
+                flash('Contraseña incorrecta')
+                return render_template('index.html')
         else:
-            flash("RFC o contraseña incorrecta, revisa tus datos", "danger")
+            flash('Usuario no encontrado')
+            return render_template('index.html')
     return render_template('index.html')
 
-#Decorardor de login
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args,**kwargs):
-        if 'logueado' not in session:
-            flash('Acceso denegado, inicia sesión para acceder a esta página', 'danger')
-            return redirect(url_for('accesoLogin'))
-        return f(*args,**kwargs)
-    return decorated_function
-
-#Decorador roles
-def rol_required(*roles):
-    def wrapper(f):
-        @wraps(f)
-        def decorated_function(*args, **kwargs):
-            if session['id_rol'] not in roles:
-                flash('No tienes permisos para acceder a esta página', 'danger')
-                return redirect(url_for('accesoLogin'))
-            return f(*args, **kwargs)
-        return decorated_function
-    return wrapper
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('accesoLogin'))
 
 @app.route('/menu')
 @login_required
-@rol_required(1)
+@roles_required(['Administrador']) 
 def menu():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM Usuario')
     usuario = cur.fetchall()
-    return render_template('admin_menu.html', usuario = usuario)
+    return render_template('admin_menu.html', usuario=usuario)
 
-#Funciones de crud Medico
+# Funciones de crud Medico
 @app.route('/editarMedico/<id>')
 @login_required
-@rol_required(1)
+@roles_required(['Administrador'])
 def editarMedico(id):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM Usuario where id= %s',[id])
+    cur.execute('SELECT * FROM Usuario WHERE id = %s', [id])
     usuario = cur.fetchall()
     cur.execute('SELECT * FROM Rol')
     roles = cur.fetchall()
-    return render_template('editarMedico.html', usuario = usuario, roles = roles)
+    return render_template('editarMedico.html', usuario=usuario, roles=roles)
 
-@app.route('/actualizarMedico/<id>', methods = ['POST'])
+@app.route('/actualizarMedico/<id>', methods=['POST'])
 @login_required
-@rol_required(1)
+@roles_required(['Administrador'])
 def actualizarMedico(id):
     if request.method == 'POST':
         nombre = request.form['txtNombre']
@@ -101,20 +123,24 @@ def actualizarMedico(id):
         correo = request.form['txtCorreo']
         contrasena = request.form['txtContrasena']
         rol = request.form['txtRol']
+
+        hashed_contrasena = generate_password_hash(contrasena)
+
         cur = mysql.connection.cursor()
-        cur.execute("UPDATE Usuario SET Nombre = %s, ApePaterno = %s, ApeMaterno = %s, RFC = %s, CedulaProfesional = %s, Correo = %s, Contrasena = %s, id_Rol = %s WHERE id = %s", (nombre, apellidoPa, apellidoMa, rfc, cedula, correo, contrasena, rol, id))
+        cur.execute("UPDATE Usuario SET Nombre = %s, ApePaterno = %s, ApeMaterno = %s, RFC = %s, CedulaProfesional = %s, Correo = %s, Contrasena = %s, id_Rol = %s WHERE id = %s", (nombre, apellidoPa, apellidoMa, rfc, cedula, correo,hashed_contrasena, rol, id))
         mysql.connection.commit()
         flash('Usuario actualizado correctamente')
         return redirect(url_for('menu'))
 
-
 @app.route('/buscarMedico')
+@login_required
+@roles_required(['Administrador'])
 def buscarMedico():
     return render_template('buscarMedico.html')
 
 @app.route('/eliminarMedico/<id>')
 @login_required
-@rol_required(1)
+@roles_required(['Administrador'])
 def eliminarMedico(id):
     cur = mysql.connection.cursor()
     cur.execute('DELETE FROM Usuario WHERE id = %s', [id])
@@ -122,19 +148,18 @@ def eliminarMedico(id):
     flash('Usuario eliminado correctamente')
     return redirect(url_for('menu'))
 
-
 @app.route('/altaMedico')
 @login_required
-@rol_required(1)
+@roles_required(['Administrador'])
 def agregarMedico():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM Rol')
     roles = cur.fetchall()
-    return render_template('agregarMedico.html',roles = roles)
+    return render_template('agregarMedico.html', roles=roles)
 
 @app.route('/guardarMedico', methods=["POST"])
 @login_required
-@rol_required(1)
+@roles_required(['Administrador'])
 def guardarMedico():
     if request.method == 'POST' and 'txtNombre' in request.form and 'txtApePaterno' in request.form and 'txtApeMaterno' in request.form and 'txtRFC' in request.form and 'txtCedula' in request.form and 'txtCorreo' in request.form and 'txtContrasena' in request.form and 'txtRol' in request.form:
         fnombre = request.form['txtNombre']
@@ -146,8 +171,10 @@ def guardarMedico():
         fcontrasena = request.form['txtContrasena']
         frol = request.form['txtRol']
 
+        hashed_contrasena = generate_password_hash(fcontrasena)
+
         cursor = mysql.connection.cursor()
-        cursor.execute('INSERT INTO Usuario (Nombre, ApePaterno, ApeMaterno, RFC, CedulaProfesional, Correo, Contrasena, id_Rol) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (fnombre, fapepaterno, fapematerno, frfc, fcedula, fcorreo, fcontrasena, frol))
+        cursor.execute('INSERT INTO Usuario (Nombre, ApePaterno, ApeMaterno, RFC, CedulaProfesional, Correo, Contrasena, id_Rol) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (fnombre, fapepaterno, fapematerno, frfc, fcedula, fcorreo, hashed_contrasena, frol))
         mysql.connection.commit()
         cursor.close()
         
@@ -156,23 +183,26 @@ def guardarMedico():
     else:
         flash('Error al agregar médico', 'error')
         return redirect(url_for('home'))
-##############################################################################################
-#Funciones de crud Paciente
+######################################################
+# Funciones de crud Paciente
 @app.route('/menuPaciente')
-@login_required
-@rol_required(1,2)
 def menuPaciente():
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM Paciente')
-    paciente = cur.fetchall()
-    return render_template('admin_user.html', paciente = paciente)
+
+    if session['id_rol'] == 1:
+        cur.execute('SELECT * FROM Paciente')
+        paciente = cur.fetchall()
+    else:
+        cur.execute('SELECT * FROM Paciente WHERE id_Medico = %s', [current_user.id])
+        paciente = cur.fetchall()
+    return render_template('admin_user.html', paciente=paciente)
 
 @app.route('/diagnosticoPaciente')
 def diagnosticoPaciente():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM Paciente')
     paciente = cur.fetchall()
-    return render_template('diagnosticoPaciente.html', paciente = paciente)
+    return render_template('diagnosticoPaciente.html', paciente=paciente)
 
 @app.route('/guardarDiagnostico/<id>', methods=["POST"])
 def guardarDiagnostico(id):
@@ -190,15 +220,13 @@ def guardarDiagnostico(id):
         flash('Diagnóstico agregado correctamente', 'success')
         return redirect(url_for('menuPaciente'))
 
-
-
 @app.route('/citaexploracion')
 def citaExploracion():
     return render_template('citaExploracion.html')
 
 @app.route('/guardarCitaExploracion/<id>', methods=["POST"])
 def guardarCitaExploracion(id):
-    if request.method == 'POST' and 'txtPeso' in request.form and 'txtAltura' in request.form and 'txtTemperatura' in request.form and 'txtLat' in request.form and 'txtSatu' in request.form and 'txtGlucosa' in request.form and 'txtEdad' in request.form:
+    if request.method == 'POST' and 'txtPeso' in request.form and 'txtAltura' in request.form and 'txtTemperatura' in request.form and 'txtLat' in request.form and 'txtSatu' in request.form and 'txtGlucosa' in request.form and 'txtEdad' in request.form and 'txtId' in request.form:
         fpeso = request.form['txtPeso']
         faltura = request.form['txtAltura']
         ftemperatura = request.form['txtTemperatura']
@@ -223,30 +251,35 @@ def expedientePaciente():
 def citaPaciente():
     return render_template('citaPaciente.html')
 
-
 @app.route('/altaPaciente')
-@login_required
-@rol_required(1,2)
 def agregarPaciente():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM Sexo')
     sexo = cur.fetchall()
 
-    return render_template('agregarPaciente.html', sexo = sexo)
+    usuario=None
+    if session['id_rol'] == 1:
+        cur.execute('SELECT * FROM Usuario WHERE id_Rol = 2')
+        usuario = cur.fetchall()
+
+    return render_template('agregarPaciente.html', sexo=sexo, usuario=usuario)
 
 @app.route('/guardarPaciente', methods=["POST"])
-@login_required
-@rol_required(1,2)
 def guardarPaciente():
-    if request.method == 'POST' and 'txtNombre' in request.form and 'txtApePaterno' in request.form and 'txtApeMaterno' in request.form and 'txtFecha' in request.form and 'txtSexo' in request.form:
+    if request.method == 'POST' and 'txtNombre' in request.form and 'txtApePaterno' in request.form and 'txtApeMaterno' in request.form and 'txtFecha' in request.form and 'txtSexo' in request.form and 'txtMedico' in request.form:
         fnombre = request.form['txtNombre']
         fapePaterno = request.form['txtApePaterno']
         fapeMaterno = request.form['txtApeMaterno']
         ffecha = request.form['txtFecha']
         fsexo = request.form['txtSexo']
 
+        if session['id_rol'] == 1:
+            fmedico = request.form['txtMedico']
+        else:
+            fmedico = current_user.id
+
         cursor = mysql.connection.cursor()
-        cursor.execute('INSERT INTO Paciente (Nombre, ApePaterno, ApeMaterno, FechaNam, id_Sexo) VALUES (%s, %s, %s, %s, %s)', (fnombre, fapePaterno, fapeMaterno, ffecha, fsexo))
+        cursor.execute('INSERT INTO Paciente (Nombre, ApePaterno, ApeMaterno, FechaNam, id_Sexo, id_Medico) VALUES (%s, %s, %s, %s, %s,%s)', (fnombre, fapePaterno, fapeMaterno, ffecha, fsexo, fmedico))
         mysql.connection.commit()
         flash('Paciente agregado correctamente', 'success')
         return redirect(url_for('menuPaciente'))
@@ -255,19 +288,15 @@ def guardarPaciente():
         return redirect(url_for('home'))
     
 @app.route('/editarPaciente/<id>')
-@login_required
-@rol_required(1,2)
 def editarPaciente(id):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM Paciente where id= %s',[id])
+    cur.execute('SELECT * FROM Paciente WHERE id= %s', [id])
     paciente = cur.fetchall()
     cur.execute('SELECT * FROM Sexo')
     sexo = cur.fetchall()
-    return render_template('editarPaciente.html', paciente = paciente, sexo = sexo)
+    return render_template('editarPaciente.html', paciente=paciente, sexo=sexo)
 
-@app.route('/actualizarPaciente/<id>', methods = ['POST'])
-@login_required
-@rol_required(1,2)
+@app.route('/actualizarPaciente/<id>', methods=['POST'])
 def actualizarPaciente(id):
     if request.method == 'POST':
         nombre = request.form['txtNombre']
@@ -282,8 +311,6 @@ def actualizarPaciente(id):
         return redirect(url_for('menuPaciente'))
 
 @app.route('/eliminarPaciente/<id>')
-@login_required
-@rol_required(1,2)
 def eliminarPaciente(id):
     cur = mysql.connection.cursor()
     cur.execute('DELETE FROM Paciente WHERE id = %s', [id])
@@ -291,20 +318,19 @@ def eliminarPaciente(id):
     flash('Paciente eliminado correctamente')
     return redirect(url_for('menuPaciente'))
 
-
-#ejemplo de vista
+# Ejemplo de vista
 @app.route('/ejemplo')
 def ejemplo():
     return render_template('ejemplo.html')
-    
+
 @app.route('/cita')
 def agregarCita():
     return render_template('citaPaciente.html')
-
 
 @app.errorhandler(404)
 def paginano(e):
     return 'Revisa tu sintaxis: No encontré nada', 404
 
 if __name__ == '__main__':
+    csrf.init_app(app)
     app.run(port=3000, debug=True, threaded=True)

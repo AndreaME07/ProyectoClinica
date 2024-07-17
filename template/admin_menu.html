@@ -11,7 +11,7 @@
                     <th scope="col">Nombre completo</th>
                     <th scope="col">Cédula Profesional</th>
                     <th scope="col">Correo</th>
-                    <th scope="col">Contraseña</th>
+
                     <th scope="col">Rol</th>
                     <th scope="col">Acciones</th>
                 </tr>
@@ -28,7 +28,6 @@
                     <td>{{ usuario.2 }} {{ usuario.3 }} {{ usuario.4 }}</td>
                     <td>{{ usuario.5 }}</td>
                     <td>{{ usuario.6 }}</td>
-                    <td>{{ usuario.7 }}</td>
                     <td>{{ usuario.8 }}</td>
                     <td><a href="/editarMedico/{{usuario.0}}" type="button" class="btn btn-warning">Editar</a></td>
                     {% if session['id_rol'] == 1 %}

@@ -37,7 +37,7 @@ def create_database():
                    ApeMaterno VARCHAR(100) NOT NULL,
                    CedulaProfesional VARCHAR(20) NOT NULL,
                    Correo VARCHAR(100) NOT NULL,
-                   Contrasena VARCHAR(100) NOT NULL,
+                   Contrasena VARCHAR(400) NOT NULL,
                    id_rol INT,
                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -51,9 +51,11 @@ def create_database():
                    ApeMaterno VARCHAR(100) NOT NULL,
                    FechaNam DATE NOT NULL,
                    id_Sexo INT,
+                   id_Medico INT,
                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                   FOREIGN KEY (id_Sexo) REFERENCES Sexo(id)
+                   FOREIGN KEY (id_Sexo) REFERENCES Sexo(id),
+                   FOREIGN KEY (id_Medico) REFERENCES Usuario(id)
                    )""")
         #Tabla de Expediente
     cursor.execute("""CREATE TABLE IF NOT EXISTS Expediente(
@@ -63,6 +65,7 @@ def create_database():
                     EnfermedadC TEXT(600) NOT NULL,
                     Alergias TEXT(600) NOT NULL,
                     AntecedentesFam TEXT(600) NOT NULL,
+                    created_by INT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                     FOREIGN KEY (id_Paciente) REFERENCES Paciente(id),

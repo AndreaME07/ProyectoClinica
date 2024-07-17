@@ -3,6 +3,7 @@
     <div class="form-container">
         <h2>Editar datos del paciente</h2>
         <form action="/guardarPaciente" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="form-group">
                 <label for="nombre">Nombre </label>
                 <input type="text" class="form-control" id="nombre" name="txtNombre">
@@ -27,6 +28,18 @@
                     {%endfor%}
                 </select>
             </div>
+            {%if session['id_rol']== 1%}
+            <div class="form-group">
+                <label for="txtMedico">Médico:</label>
+                <select class="form-control" id="medico" name="txtMedico">
+                    {%for usuario in usuario%}
+                    <option value="{{usuario.0}}">{{usuario.2}} {{usuario.3}} {{usuario.4}}</option>
+                    {%endfor%}
+                </select>
+            </div>
+            {%else%}
+            <input type="hidden" name="txtMedico" value="{{current_user.id}}">
+            {%endif%}
             <button type="submit" class="btn btn-info">Agregar paciente</button>
         </form>
     </div>

@@ -4,6 +4,7 @@
     <div class="form-container">
         <h2>Editar datos del paciente</h2>
         <form action="/actualizarPaciente/{{paciente.0}}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="form-group">
                 <label for="nombre">Nombre</label>
                 <input type="text" class="form-control" id="nombre" name="txtNombre" value="{{paciente.1}}">

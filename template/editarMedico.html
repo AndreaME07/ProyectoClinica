@@ -7,6 +7,7 @@
    <div class="form-container">
         <h2>Editar datos del Médico</h2>
         <form action="/actualizarMedico/{{usuario.0}}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
                 <input type="text" class="form-control" id="nombre" name="txtNombre" value="{{usuario.2}}">
