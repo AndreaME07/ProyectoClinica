@@ -1,5 +1,5 @@
 import MySQLdb
-import os
+#import os
 
 def create_database():
     db = MySQLdb.connect(
