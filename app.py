@@ -167,7 +167,7 @@ def menuPaciente():
     paciente = cur.fetchall()
     return render_template('admin_user.html', paciente = paciente)
 
-@app.route('/diagnosticopaciente')
+@app.route('/diagnosticoPaciente')
 def diagnosticoPaciente():
     return render_template('diagnosticoPaciente.html')
 
