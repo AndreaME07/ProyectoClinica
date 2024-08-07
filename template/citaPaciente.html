@@ -1,5 +1,5 @@
-{%extends 'plantillaAdmin.html'%}
-{%block content%}
+{% extends 'plantillaAdmin.html' %}
+{% block content %}
     <div class="container">
         <div class="title">
             <h2>Citas del paciente</h2>
@@ -12,7 +12,10 @@
             <label for="fechaCita">Fecha de cita</label>
             <input type="date" class="form-control" id="fechaCita">
         </div>
-        <div class="row">
+        <div class="d-flex justify">
+            <button type="button" class="btn btn-primary btn-sm" style="padding: 1px 3px; font-size: 17px;">Guardar cita</button>
+        </div>
+        <div class="row mt-3">
             <div class="col-md-6">
                 <h4>Citas del paciente:</h4>
                 <ul class="list-group">
@@ -36,4 +39,4 @@
             </div>
         </div>
     </div>
-    {%endblock%}
+{% endblock %}

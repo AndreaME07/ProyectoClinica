@@ -167,6 +167,7 @@ def menuPaciente():
     paciente = cur.fetchall()
     return render_template('admin_user.html', paciente = paciente)
 
+
 @app.route('/diagnosticoPaciente')
 def diagnosticoPaciente():
     return render_template('diagnosticoPaciente.html')
@@ -260,7 +261,6 @@ def ejemplo():
 @app.route('/cita')
 def agregarCita():
     return render_template('citaPaciente.html')
-
 
 @app.errorhandler(404)
 def paginano(e):
