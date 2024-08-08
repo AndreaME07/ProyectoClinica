@@ -168,9 +168,9 @@ def menuPaciente():
     return render_template('admin_user.html', paciente = paciente)
 
 
-@app.route('/diagnosticoPaciente')
-def diagnosticoPaciente():
-    return render_template('diagnosticoPaciente.html')
+@app.route('/diagnostico')
+def diagnostico():
+    return render_template('diagnostico.html')
 
 @app.route('/citaexploracion')
 def citaExploracion():

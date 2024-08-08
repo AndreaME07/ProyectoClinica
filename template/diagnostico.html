@@ -1,0 +1,51 @@
+{% extends 'plantillaAdmin.html' %}
+{% block content %}
+    <div class="container mt-5">
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-6 text-center">
+                <img src="{{ url_for('static', filename='logonegroclinica.jpg') }}" alt="Clinica Mayo" class="logo">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="card" style="background-color: #b5e1ff;">
+                    <div class="card-body">
+                        <h5 class="card-title">Síntomas</h5>
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div><!-- CIERRA EL DIV PARA EL CARD-BODY -->
+                </div><!-- CIERRA EL DIV PARA EL CARD -->
+                <div class="card mt-3" style="background-color: #b5e1ff;">
+                    <div class="card-body">
+                        <h5 class="card-title">Diagnóstico</h5>
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div><!-- CIERRA EL DIV PARA EL CARD-BODY -->
+                </div><!-- CIERRA EL DIV PARA EL CARD -->
+            </div><!-- CIERRA EL DIV PARA EL COL-MD-6 -->
+            <div class="col-md-6 mb-3">
+                <div class="card" style="background-color: #b5e1ff;">
+                    <div class="card-body">
+                        <h5 class="card-title">Estudios Necesarios (en caso de requerir)</h5>
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div><!-- CIERRA EL DIV PARA EL CARD-BODY -->
+                </div><!-- CIERRA EL DIV PARA EL CARD -->
+                <div class="card mt-3" style="background-color: #b5e1ff;">
+                    <div class="card-body">
+                        <h5 class="card-title">Tratamiento e Indicaciones</h5>
+                        <textarea class="form-control" rows="3"></textarea>
+                    </div><!-- CIERRA EL DIV PARA EL CARD-BODY -->
+                </div><!-- CIERRA EL DIV PARA EL CARD -->
+            </div><!-- CIERRA EL DIV PARA EL COL-MD-6 -->
+        </div><!-- CIERRA EL DIV PARA EL ROW -->
+        
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex justify-content-end mb-4 mt-1">
+                    <button type="submit" class="btn btn-primary me-2" style="background-color: #0b6f9e; width: 150px; height: 40px; font-size: 16px;">Guardar datos</button>
+                    <button type="submit" class="btn btn-primary" style="background-color: #0b6f9e; width: 150px; height: 40px; font-size: 16px;">Generar receta</button>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div><!-- CIERRA EL DIV PARA EL CONTAINER -->
+{% endblock %}
