@@ -176,9 +176,9 @@ def diagnostico():
 def citaExploracion():
     return render_template('citaExploracion.html')
 
-@app.route('/expedientePaciente')
-def expedientePaciente():
-    return render_template('expedientePaciente.html')
+@app.route('/buscarexpediente')
+def buscarexpediente():
+    return render_template('buscarexpediente.html')
 
 @app.route('/citaPaciente')
 def citaPaciente():
