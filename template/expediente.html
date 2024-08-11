@@ -1,0 +1,49 @@
+{% extends "plantillaAdmin.html"%}
+{% block content %}
+<div class="caja">
+    <div class="content">
+        <script>
+            var paciente = JSON.parse('{{ paciente | tojson | safe }}');
+            console.log(paciente);
+        </script>
+        <img src="{{ url_for('static', filename='logonegroclinica.jpg') }}" alt="Clinica Mayo" class="logo">
+        <!-- Muestra del expediente -->
+        <h1 class="titulo">Expediente</h1>
+        {%if paciente %}
+        <div class="row">
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-body">
+                        {% for paciente in paciente %}
+                        <h5 class="card-header text-center mb-2">{{ paciente.1 }} {{ paciente.2}} {{paciente.3 }}</h5>
+                        <p class="card-text">Fecha de nacimiento: {{ paciente.4 }}</p>
+                        {% if paciente.5 == 1 %}
+                        <p class="card-text">Sexo: Masculino</p>
+                        {% else %}
+                        <p class="card-text">Sexo: Femenino</p>
+                        {% endif %}
+                        <p class="card-text">Enfermedades Cronicas: {{ paciente.12 }}</p>
+                        <p class="card-text">Alergias: {{ paciente.13 }}</p>
+                        <p class="card-text">Antecedentes Familiares: {{ paciente.14 }}</p>
+                        {% endfor %}
+
+
+                    </div>
+                </div>
+            </div>
+            <!-- Boton de editar -->
+             {%for paciente in paciente%}
+            <div class="col-4">
+                <a href="/editarExpediente/{{paciente.0}}" type="button" class="btn btn-warning">Editar</a>
+            </div>
+            {%endfor%}
+        </div>
+        {%else%}
+        <h5 class="card-header text-center mb-2">No hay expediente</h5>
+        <a href="/crearExpediente/{{paciente.0}}" type="button" class="btn btn primary">Crear Expediente</a>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

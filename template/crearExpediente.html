@@ -1,0 +1,46 @@
+{%extends "plantillaAdmin.html"%}
+{%block content%}
+<div class="form-container">
+    <script>
+        var paciente = JSON.parse('{{ paciente | tojson | safe }}');
+        console.log(paciente);
+
+    </script>
+    <h2>Crear Expediente</h2>
+    <form action="/guardarExpediente" method="POST">
+        {%for paciente in paciente%}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+            <input type="text" name="id_medico" value="{{paciente.6}}" hidden>
+            <input type="text" name="created_by" value="{{user_id}}" hidden>
+            <input type="text" name="id_paciente" value="{{paciente.0}}" hidden>
+            <label for="nombre">Nombre:</label>
+            <input type="text" class="form-control" id="nombre" value="{{paciente.1}}" name="nombre" disabled>
+        </div>
+        <div class="form-group">
+            <label for="nombre">Apellido Paterno:</label>
+            <input type="text" class="form-control" id="nombre" value="{{paciente.2}}" name="apePaterno" disabled>
+        </div>
+        <div class="form-group">
+            <label for="nombre">Apellido Materno:</label>
+            <input type="text" class="form-control" id="nombre" value="{{paciente.3}}" name="apeMaterno" disabled>
+        </div>
+        <div class="form-group">
+            <label for="rfc">Enfermedades Cronicas:</label>
+            <textarea type="text-area" class="form-control" id="rfc" name="enfCro"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="cedula">Alergias:</label>
+            <textarea type="text" class="form-control" id="cedula" name="alergias"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="correo">Antecedentes Famliares:</label>
+            <textarea type="email" class="form-control" id="correo" name="antFam"></textarea>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-info">Guardar Expediente</button>
+        </div>
+        {%endfor%}
+    </form>
+</div>
+{%endblock%}

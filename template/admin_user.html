@@ -1,32 +1,59 @@
 {% extends "plantillaAdmin.html" %}
 {% block content %}
 <div class="caja">
+    <script>
+        var paciente = JSON.parse('{{ paciente | tojson | safe }}');
+        console.log(paciente);
+    </script>
     <div class="content">
         <img src="{{ url_for('static', filename='logonegroclinica.jpg') }}" alt="Clinica Mayo" class="logo">
+        <!-- BUscador de paciente -->
+        <form action="/buscarPaciente" method="POST" class="form-inline">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="input-group">
+                <input type="text" class="form-control" name="buscarPaciente" placeholder="Buscar paciente">
+            </div>
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+
+        <h1 class="titulo">Pacientes</h1>
         <table class="table table-custom">
             <thead>
                 <tr>
                     <th>Nombre</th>
                     <th>Fecha de nacimiento</th>
                     <th>Sexo</th>
+                    {% if session['id_rol'] == 1 %}
+                    <th>Medico asignado</th>
+                    <th>Rol del medico</th>
+                    {% endif %}
+                    <th>Acciones</th>
+
                 </tr>
             </thead>
             <tbody class="table-group-divider">
                 {% if paciente %}
                 {% for paciente in paciente %}
                 <tr>
-                    <td></td>
-                    <td>{{ paciente.1 }} {{ paciente.2}} {{paciente.3  }}</td>
+                    <td>{{ paciente.1 }} {{ paciente.2}} {{paciente.3 }}</td>
                     <td>{{ paciente.4 }}</td>
                     {% if paciente.5 == 1 %}
                     <td>Masculino</td>
                     {% else %}
                     <td>Femenino</td>
                     {% endif %}
-                    <td><a href="/editarPaciente/{{paciente.0}}" type="button" class="btn btn-warning">Editar</a></td>
                     {% if session['id_rol'] == 1 %}
-                        <td><button onclick="confirmarEliminacion(event, '{{paciente.0}}')" class="btn btn-danger">Borrar</button></td>
+                    <td>{{paciente.11}} {{paciente.12}} {{paciente.13}}</td>
+                    <td>{{paciente.20}}</td>
                     {% endif %}
+                    <td><a href="/editarPaciente/{{paciente.0}}" type="button" class="btn btn-warning">Editar</a></td>
+                    <td><button onclick="confirmarEliminacion(event, '{{paciente.0}}')"
+                            class="btn btn-danger">Borrar</button></td>
+                    <td>
+                        <a href="/expedientePaciente/{{paciente.0}}">Ver expediente</a>
+                    </td>
+                    <td><a href="/citaExploracion/{{paciente.0}}" type="button" class="btn btn-primary">Ver citas</a></td>
+
                 </tr>
                 {% endfor %}
                 {% else %}

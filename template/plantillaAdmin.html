@@ -107,7 +107,7 @@
                             {% if session['id_rol'] == 1 %}
                                 <li><a class="dropdown-item" href="{{ url_for('agregarMedico') }}">Agregar Médico</a></li>
                             {% endif %}
-                            {% if session['id_rol'] == 2 %}
+                            {% if session['id_rol'] == 2 or session['id_rol']==1%}
                                 <li><a class="dropdown-item" href="{{ url_for('agregarPaciente') }}">Agregar Paciente</a></li>
                             {% endif %}
                         </ul>
@@ -122,6 +122,9 @@
                             <li><a class="dropdown-item" href="/editarPaciente">Editar</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('diagnosticoPaciente') }}">Expediente</a></li>
                         </ul>
+                    </li>
+                    <li class="nav-item position-absolute top-0 end-0">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Cerrar sesión</a>
                     </li>
                 </ul>
             </div>

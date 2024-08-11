@@ -2,7 +2,20 @@
 {% block content %}
 <div class="caja">
     <div class="content">
+        <script>
+            var usuario = JSON.parse('{{ usuario | tojson | safe }}');
+            console.log(usuario);
+        </script>
         <img src="{{ url_for('static', filename='logonegroclinica.jpg') }}" alt="Clinica Mayo" class="logo">
+        <!-- Buscador de usuarios -->
+        <form action="/buscarMedico" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Buscar médico" name="buscarMedico" aria-label="Buscar médico"
+                    aria-describedby="button-addon2">
+                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Buscar</button>
+            </div>
+        </form>
         <table class="table table-custom">
             <thead>
                 <tr>
@@ -28,7 +41,7 @@
                     <td>{{ usuario.2 }} {{ usuario.3 }} {{ usuario.4 }}</td>
                     <td>{{ usuario.5 }}</td>
                     <td>{{ usuario.6 }}</td>
-                    <td>{{ usuario.8 }}</td>
+                    <td>{{ usuario.11 }}</td>
                     <td><a href="/editarMedico/{{usuario.0}}" type="button" class="btn btn-warning">Editar</a></td>
                     {% if session['id_rol'] == 1 %}
                         <td><button onclick="confirmarEliminacion(event, '{{ usuario.0 }}')" class="btn btn-danger">Borrar</button></td>

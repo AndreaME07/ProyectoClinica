@@ -94,7 +94,7 @@ def logout():
 @roles_required(['Administrador']) 
 def menu():
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM Usuario')
+    cur.execute('SELECT Usuario.*, Rol.Nombre FROM Usuario JOIN Rol ON Usuario.id_Rol = Rol.id')
     usuario = cur.fetchall()
     return render_template('admin_menu.html', usuario=usuario)
 
@@ -132,10 +132,24 @@ def actualizarMedico(id):
         flash('Usuario actualizado correctamente')
         return redirect(url_for('menu'))
 
-@app.route('/buscarMedico')
+@app.route('/buscarMedico', methods=['POST'])
 @login_required
 @roles_required(['Administrador'])
 def buscarMedico():
+    if request.method == 'POST':
+        medico = request.form['buscarMedico']
+        cur = mysql.connection.cursor()
+        cur.execute('SELECT Usuario.*, Rol.Nombre FROM Usuario JOIN Rol ON Usuario.id_Rol = Rol.id WHERE Usuario.Nombre LIKE %s', ['%' + medico + '%'])
+        if cur.rowcount > 0:
+            usuario = cur.fetchall()
+            return render_template('admin_menu.html', usuario=usuario)
+        else:
+            flash('No se encontró el médico')
+            cur.execute('SELECT Usuario.*, Rol.Nombre FROM Usuario JOIN Rol ON Usuario.id_Rol = Rol.id')
+            usuario = cur.fetchall()
+
+        return render_template('admin_menu.html', usuario=usuario)
+
     return render_template('buscarMedico.html')
 
 @app.route('/eliminarMedico/<id>')
@@ -186,34 +200,195 @@ def guardarMedico():
 ######################################################
 # Funciones de crud Paciente
 @app.route('/menuPaciente')
+@login_required
+@roles_required(['Administrador', 'Medico'])
 def menuPaciente():
     cur = mysql.connection.cursor()
-
     if session['id_rol'] == 1:
-        cur.execute('SELECT * FROM Paciente')
+        cur.execute('''
+            SELECT Paciente.*, Usuario.*, Rol.Nombre
+            FROM Paciente 
+            JOIN Usuario ON Paciente.id_Medico = Usuario.id
+            JOIN Rol ON Usuario.id_Rol = Rol.id
+        ''')
         paciente = cur.fetchall()
+        
     else:
         cur.execute('SELECT * FROM Paciente WHERE id_Medico = %s', [current_user.id])
         paciente = cur.fetchall()
     return render_template('admin_user.html', paciente=paciente)
+
+@app.route('/buscarPaciente', methods=['POST'])
+@login_required
+@roles_required(['Administrador', 'Medico'])
+def buscarPaciente():
+    if request.method == 'POST':
+        paciente = request.form['buscarPaciente']
+        cur = mysql.connection.cursor()
+        if session['id_rol'] == 1:
+            cur.execute('''
+                SELECT Paciente.*, Usuario.*, Rol.Nombre
+                FROM Paciente 
+                JOIN Usuario ON Paciente.id_Medico = Usuario.id
+                JOIN Rol ON Usuario.id_Rol = Rol.id
+                WHERE Paciente.Nombre LIKE %s
+            ''', ['%' + paciente + '%'])
+        else:
+            cur.execute('SELECT * FROM Paciente WHERE Nombre LIKE %s AND id_Medico = %s', ['%' + paciente + '%', current_user.id])
+        if cur.rowcount > 0:
+            paciente = cur.fetchall()
+            return render_template('admin_user.html', paciente=paciente)
+        else:
+            flash('No se encontró el paciente')
+            if session['id_rol'] == 1:
+                cur.execute('''
+                    SELECT Paciente.*, Usuario.*, Rol.Nombre
+                    FROM Paciente 
+                    JOIN Usuario ON Paciente.id_Medico = Usuario.id
+                    JOIN Rol ON Usuario.id_Rol = Rol.id
+                ''')
+                paciente = cur.fetchall()
+            else:
+                cur.execute('SELECT * FROM Paciente WHERE id_Medico = %s', [current_user.id])
+                paciente = cur.fetchall()
+
+        return render_template('admin_user.html', paciente=paciente)
+
+    return render_template('buscarPaciente.html')
 
 @app.route('/diagnosticoPaciente')
 def diagnosticoPaciente():
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM Paciente')
     paciente = cur.fetchall()
-    return render_template('diagnosticoPaciente.html', paciente=paciente)
+    return render_template('diagnostico.html', paciente=paciente)
 
 
 @app.route('/diagnostico')
 def diagnostico():
     return render_template('diagnostico.html')
 
-@app.route('/citaexploracion')
-def citaExploracion():
-    return render_template('citaExploracion.html')
+@app.route('/citaExploracion/<id>')
+@login_required
+@roles_required(['Administrador', 'Medico'])
+def citaExploracion(id):
+    cur = mysql.connection.cursor()
 
-@app.route('/buscarexpediente')
+    # Consulta de Paciente
+    cur.execute('SELECT * FROM Paciente WHERE id = %s', [id])
+    paciente = cur.fetchone()
+
+    # Consulta de Expediente
+    expediente = None
+    if paciente:
+        cur.execute('SELECT * FROM Expediente WHERE id_Paciente = %s', [id])
+        expediente = cur.fetchone()
+
+    # Consulta de Cita
+    cita = None
+    if expediente:
+        cur.execute('SELECT * FROM Cita WHERE id_expediente = %s', [expediente['id']])
+        cita = cur.fetchone()
+
+    # Consulta de Receta
+    receta = None
+    if cita:
+        cur.execute('SELECT * FROM Receta WHERE id_cita = %s', [cita['id']])
+        receta = cur.fetchone()
+
+    return render_template('citaPaciente.html', paciente=paciente, expediente=expediente, cita=cita, receta=receta)
+
+
+@app.route('/expedientePaciente/<id>')
+@login_required
+@roles_required(['Administrador', 'Medico'])
+def expedientePaciente(id):
+    cur = mysql.connection.cursor()
+
+    cur.execute('''
+        SELECT Paciente.*, Expediente.* 
+        FROM Paciente 
+        LEFT JOIN Expediente ON Paciente.id = Expediente.id_Paciente 
+        WHERE Paciente.id = %s
+    ''', [id])
+    
+    paciente = cur.fetchall()
+
+    if len(paciente) == 0 or paciente[0][len(paciente[0])-1] is None:
+        cur.execute('SELECT * FROM Paciente WHERE id = %s', [id])
+        paciente = cur.fetchall()
+        
+        user_id = current_user.id  
+        return render_template('crearExpediente.html', paciente=paciente, user_id=user_id)
+    
+    return render_template('expediente.html', paciente=paciente)
+
+
+
+@app.route('/crearExpediente/<id>')
+@login_required
+@roles_required(['Administrador', 'Medico'])
+def crearExpediente(id):
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM Paciente WHERE id = %s', [id])
+    paciente = cur.fetchall()
+    return render_template('crearExpediente.html', paciente=paciente)
+
+@app.route('/guardarExpediente', methods=["POST"])
+@login_required
+@roles_required(['Administrador', 'Medico'])
+def guardarExpediente():
+    if request.method == 'POST' and 'id_medico' in request.form and 'id_paciente' in request.form and 'enfCro' in request.form and 'alergias' in request.form and 'antFam' in request.form and 'created_by' in request.form:
+        fid_paciente = request.form['id_paciente']
+        fid_medico = request.form['id_medico']
+        fenfCro = request.form['enfCro']
+        falergias = request.form['alergias']
+        fantFam = request.form['antFam']
+        fcreated_by = request.form['created_by']
+
+        cursor = mysql.connection.cursor()
+        cursor.execute('INSERT INTO Expediente (id_Paciente, id_Medico, EnfermedadC, Alergias, AntecedentesFam, created_by) VALUES (%s, %s, %s, %s, %s, %s)', (fid_paciente, fid_medico, fenfCro, falergias, fantFam, fcreated_by))
+        mysql.connection.commit()
+        return redirect(url_for('expedientePaciente', id=fid_paciente))
+
+
+@app.route('/editarExpediente/<id>')
+@login_required
+@roles_required(['Administrador', 'Medico'])
+def editarExpediente(id):
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT Paciente.*, Expediente.* FROM Paciente JOIN Expediente ON Paciente.id = Expediente.id_Paciente WHERE Paciente.id = %s', [id])
+    paciente = cur.fetchall()
+    return render_template('editarExpediente.html', paciente=paciente)
+
+@app.route('/actualizarExpediente/<id>', methods=['POST'])
+@login_required
+@roles_required(['Administrador', 'Medico'])
+def actualizarExpediente(id):
+    if request.method == 'POST' and all(key in request.form for key in ['id_medico', 'id_paciente', 'enfCro', 'alergias', 'antFam', 'created_by']):
+        fid_paciente = request.form['id_paciente']
+        fid_medico = request.form['id_medico']
+        fenfCro = request.form['enfCro']
+        falergias = request.form['alergias']
+        fantFam = request.form['antFam']
+        fcreated_by = request.form['created_by']
+
+        print(f"Datos recibidos: {fid_paciente}, {fid_medico}, {fenfCro}, {falergias}, {fantFam}, {fcreated_by}")
+
+        cur = mysql.connection.cursor()
+        cur.execute("UPDATE Expediente SET id_Medico = %s, EnfermedadC = %s, Alergias = %s, AntecedentesFam = %s, created_by = %s WHERE id_Paciente = %s", 
+                    (fid_medico, fenfCro, falergias, fantFam, fcreated_by, fid_paciente))
+        mysql.connection.commit()
+        flash('Expediente actualizado correctamente')
+        return redirect(url_for('expedientePaciente', id=fid_paciente))
+    else:
+        flash('Datos insuficientes para actualizar el expediente')
+        return redirect(url_for('expedientePaciente', id=id))
+
+    
+@app.route('/buscarExpediente')
+@login_required
+@roles_required(['Administrador', 'Medico'])
 def buscarexpediente():
     return render_template('buscarexpediente.html')
 

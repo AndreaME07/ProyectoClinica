@@ -1,51 +1,63 @@
 {% extends 'plantillaAdmin.html' %}
 {% block content %}
+<script>
+    var paciente = JSON.parse('{{paciente | tojson | safe}}');
+    console.log(paciente);
+    var citas = JSON.parse('{{cita | tojson | safe}}');
+    console.log(citas);
+    var recetas = JSON.parse('{{receta | tojson | safe}}');
+    console.log(recetas);
+
+</script>
 <div class="d-flex justify-content-center align-items-center vh-100">
-    
     <div class="card p-4" style="width: 100%; max-width: 600px; background-color: #b5e1ff;">
-    <div class="container">
-        <div class="title text-center mb-8">
-            <h2>Citas del paciente</h2>
-        </div>
-        <form action="">
-        <div class="form-group">
-            <label for="nombrePaciente">Nombre del paciente</label>
-            <input type="text" class="form-control" id="nombrePaciente" placeholder="Nombre del paciente">
-            <button type="submit" class="btn btn-primary mt-2">Buscar</button>
-        </div>
-        </form>
-        <div class="form-group">
-            <label for="fechaCita">Fecha de cita</label>
-            <input type="date" class="form-control" id="fechaCita">
-        </div>
-        <div class="col-md-12 mt-4">
-            <div class="d-flex justify-content-end">
-                <div class="text-center mt-6 mb-1">
-                    <button type="submit" class="btn btn-primary" style="color: black;">Buscar paciente</button>
+        <div class="container">
+            <div class="header-card text-center mb-8">
+                <h2>Citas del paciente</h2>
+            </div>
+            <div>
+                <h4>Nombre: <span id="nombre">{{paciente[1]}}</span></h4>
+                <h4>Apellido Paterno: <span id="apePaterno">{{paciente[2]}}</span></h4>
+                <h4>Apellido Materno: <span id="apeMaterno">{{paciente[3]}}</span></h4>
+            </div>
+            <!-- Buscar citas por dia-->
+            <div class="form-group row">
+                <label for="fecha">Buscar por fecha:</label>
+                <input type="date" class="form-control col-10" id="fecha" name="fecha">
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-6 card">
+                    <h4>Citas del paciente:</h4>
+                    <ul class="list-group">
+                        {%if cita%}
+                        {%for cita in citas%}
+                        <li class="list-group item">{{citas.9}}</li>
+                        {%endfor%}
+                        {%else%}
+                        <li class="list-group
+                            item">No hay citas</li>
+                        {%endif%}
+
+                    </ul>
+                </div>
+                <div class="col-md-6 card">
+                    <h4>Recetas del paciente</h4>
+                    <ul class="list-group">
+                        {%if receta%}
+                        {%for receta in recetas%}
+                        <li class="list-group
+                            item">{{receta.4}}</li>
+                        {%endfor%}
+                        {%else%}
+                        <li class="list-group
+                            item">No hay recetas</li>
+                        {%endif%}
+
+                    </ul>
                 </div>
             </div>
-        </div>    
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <h4>Citas del paciente:</h4>
-                <ul class="list-group">
-                   
-                </ul>
-            </div>
-            <div class="col-md-6">
-                <h4>Recetas del paciente</h4>
-                <ul class="list-group">
-                    <li class="list-group-item">RECETA 1</li>
-                    <li class="list-group-item">RECETA 2</li>
-                    <li class="list-group-item">RECETA 3</li>
-                    <li class="list-group-item">RECETA 4</li>
-                    <li class="list-group-item">RECETA 5</li>
-                    <li class="list-group-item">RECETA 6</li>
-                    <li class="list-group-item">RECETA 7</li>
-                </ul>
-            </div>
         </div>
     </div>
-    </div>
-    </div>
+</div>
 {% endblock %}

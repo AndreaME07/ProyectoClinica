@@ -1,0 +1,41 @@
+{% extends "plantillaAdmin.html" %}
+{% block content %}
+<div class="form-container">
+    <h2>Editar Expediente</h2>
+    <form action="/actualizarExpediente/{{paciente.0}}" method="POST">
+        {% for paciente in paciente %}
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group row">
+            <input type="text" name="id_medico" value="{{paciente.6}}" hidden>
+            <input type="text" name="created_by" value="{{paciente.15}}" hidden>
+            <input type="text" name="id_paciente" value="{{paciente.0}}" hidden>
+            <label for="nombre" class="col-2">Nombre:</label>
+            <input type="text" class="form-control col-10" id="nombre" value="{{paciente.1}}" name="nombre" disabled>
+        </div>
+        <div class="form-group row">
+            <label for="nombre" class="col-2">Apellido Paterno:</label>
+            <input type="text" class="form-control col-10" id="nombre" value="{{paciente.2}}" name="apePaterno" disabled>
+        </div>
+        <div class="form-group row">
+            <label for="nombre" class="col-2">Apellido Materno:</label>
+            <input type="text" class="form-control col-10" id="nombre" value="{{paciente.3}}" name="apeMaterno" disabled>
+        </div>
+        <div class="form-group row">
+            <label for="rfc" class="col-2">Enfermedades Cronicas:</label>
+            <textarea class="form-control col-10" id="rfc" name="enfCro">{{paciente.12}}</textarea>
+        </div>
+        <div class="form-group row">
+            <label for="cedula" class="col-2">Alergias:</label>
+            <textarea class="form-control col-10" id="cedula" name="alergias">{{paciente.13}}</textarea>
+        </div>
+        <div class="form-group row">
+            <label for="correo" class="col-2">Antecedentes Famliares:</label>
+            <textarea class="form-control col-10" id="correo" name="antFam">{{paciente.14}}</textarea>
+        </div>
+        <div class="form-group row">
+            <button type="submit" class="btn btn-info">Guardar Expediente</button>
+        </div>
+        {% endfor %}
+    </form>
+</div>
+{% endblock %}
