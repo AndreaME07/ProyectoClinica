@@ -1,102 +1,76 @@
 {%extends 'plantillaAdmin.html'%}
-{%block content %}
-    <style>
-        body {
-            background-color: #6ab4da;
-        }
-
-        .caja {
-            display: flex;
-            justify-content: center;
-            align-items: center; /* Centrar verticalmente */
-            height: 100vh;
-            padding-top: 50px;
-        }
-
-        .form-container {
-            background-color: #e6f3fa; /* Color del formulario */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px; /* Ajuste para limitar el ancho del formulario */
-        }
-
-        .navbar-custom {
-            background-color: #95C8DD; /* Color personalizado de la navbar */
-            color: black; /* Color del texto de la navbar */
-        }
-    </style>
-    <div class="caja">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-9">
-                    <div class="form-container">
-                        <form class="mb-4 mt-4">
-                            <fieldset>
-                                <legend>Cita de exploración del paciente</legend>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="nameInput" class="form-label">Nombre:</label>
-                                        <input type="text" class="form-control" id="nameInput" placeholder="Ingrese nombre(s)">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="apellidopInput" class="form-label">Apellido paterno:</label>
-                                        <input type="text" class="form-control" id="apellidopInput" placeholder="Ingrese apellido paterno">
+{%block content%}
+<div class="caja">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-9">
+                <div class="form-container">
+                    <form class="mb-1 mt-1">
+                        <fieldset>
+                            <legend>Cita de exploración del paciente</legend>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nameInput" class="form-label">Nombre:</label>
+                                    <input type="text" class="form-control" id="nameInput" placeholder="Ingrese nombre(s)">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="apellidopInput" class="form-label">Apellido paterno:</label>
+                                    <input type="text" class="form-control" id="apellidopInput" placeholder="Ingrese apellido paterno">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="apellidomInput" class="form-label">Apellido materno:</label>
+                                    <input type="text" class="form-control" id="apellidomInput" placeholder="Ingrese apellido materno">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="fechaInput" class="form-label">Fecha:</label>
+                                    <input type="text" class="form-control" id="fechaInput" placeholder="Ingrese fecha de la consulta">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="pesoInput" class="form-label">Peso:</label>
+                                    <input type="text" class="form-control" id="pesoInput" placeholder="Ingrese peso en kg">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="alturaInput" class="form-label">Altura:</label>
+                                    <input type="text" class="form-control" id="alturaInput" placeholder="Ingrese altura en cm">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="temperaturaInput" class="form-label">Temperatura:</label>
+                                    <input type="text" class="form-control" id="temperaturaInput" placeholder="Ingrese temperatura en C°">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="latidosInput" class="form-label">Latidos por minuto:</label>
+                                    <input type="text" class="form-control" id="latidosInput" placeholder="Ingrese latidos por minuto">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="saturacionInput" class="form-label">Saturación de oxígeno:</label>
+                                    <input type="text" class="form-control" id="saturacionInput" placeholder="Ingrese saturación de oxígeno">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="edadInput" class="form-label">Edad:</label>
+                                    <input type="text" class="form-control" id="edadInput" placeholder="Ingrese edad">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="d-flex justify-content-between">
+                                        <button type="submit" class="btn btn-primary btn-sm me-2" style="background-color: #0b6f9e;">Guardar datos</button>
+                                        <button type="submit" class="btn btn-primary btn-sm" style="background-color: #0b6f9e;">Diagnóstico</button>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="apellidomInput" class="form-label">Apellido materno:</label>
-                                        <input type="text" class="form-control" id="apellidomInput" placeholder="Ingrese apellido materno">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="pesoInput" class="form-label">Peso:</label>
-                                        <input name="txtPeso" type="text" class="form-control" id="pesoInput" placeholder="Ingrese peso en kg">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="alturaInput" class="form-label">Altura:</label>
-                                        <input type="text" name="txtAltura" class="form-control" id="alturaInput" placeholder="Ingrese altura en cm">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="temperaturaInput" class="form-label">Temperatura:</label>
-                                        <input type="text" name="txtTemperatura" class="form-control" id="temperaturaInput" placeholder="Ingrese temperatura en C°">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="latidosInput" class="form-label">Latidos por minuto:</label>
-                                        <input name="txtLat" type="text" class="form-control" id="latidosInput" placeholder="Ingrese latidos por minuto">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="saturacionInput" class="form-label">Saturación de oxígeno:</label>
-                                        <input name="txtSatu" type="text" class="form-control" id="saturacionInput" placeholder="Ingrese saturación de oxígeno">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="saturacionInput" class="form-label">Glucosa:</label>
-                                        <input name="txtGlucosa" type="text" class="form-control" id="saturacionInput" placeholder="Ingrese la glucosa">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="edadInput" class="form-label">Edad:</label>
-                                        <input name="txtEdad" type="text" class="form-control" id="edadInput" placeholder="Ingrese edad">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="d-flex justify-content-between">
-                                            <button type="submit" class="btn btn-primary" style="background-color: #0b6f9e;">Guardar datos</button>
-                                            <button type="submit" class="btn btn-primary" style="background-color: #0b6f9e;">Diagnóstico</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </form>
-                    </div>
+                            </div>                            
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {%endblock%}

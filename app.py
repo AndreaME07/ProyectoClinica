@@ -204,48 +204,18 @@ def diagnosticoPaciente():
     paciente = cur.fetchall()
     return render_template('diagnosticoPaciente.html', paciente=paciente)
 
-@app.route('/guardarDiagnostico/<id>', methods=["POST"])
-def guardarDiagnostico(id):
-    if request.method == 'POST' and 'txtSintomas' in request.form and 'txtDiagnos' in request.form and 'txtEstudios' in request.form and 'txtTratamiento' in request.form:
-        fsintomas = request.form['txtSintomas']
-        fdiagnos = request.form['txtDiagnos']
-        festudios = request.form['txtEstudios']
-        ftratamiento = request.form['txtTratamiento']
 
-        cursor = mysql.connection.cursor()
-        cursor.execute('INSERT INTO Diagnostico (id_Cita, Sintomas, Dx, Tratamiento, Estudios) VALUES (%s, %s, %s, %s, %s)', (id, fsintomas, fdiagnos, ftratamiento, festudios))
-        mysql.connection.commit()
-        cursor.close()
-        
-        flash('Diagnóstico agregado correctamente', 'success')
-        return redirect(url_for('menuPaciente'))
+@app.route('/diagnostico')
+def diagnostico():
+    return render_template('diagnostico.html')
 
 @app.route('/citaexploracion')
 def citaExploracion():
     return render_template('citaExploracion.html')
 
-@app.route('/guardarCitaExploracion/<id>', methods=["POST"])
-def guardarCitaExploracion(id):
-    if request.method == 'POST' and 'txtPeso' in request.form and 'txtAltura' in request.form and 'txtTemperatura' in request.form and 'txtLat' in request.form and 'txtSatu' in request.form and 'txtGlucosa' in request.form and 'txtEdad' in request.form and 'txtId' in request.form:
-        fpeso = request.form['txtPeso']
-        faltura = request.form['txtAltura']
-        ftemperatura = request.form['txtTemperatura']
-        flat = request.form['txtLat']
-        fsatu = request.form['txtSatu']
-        fglucosa = request.form['txtGlucosa']
-        fedad = request.form['txtEdad']
-
-        cursor = mysql.connection.cursor()
-        cursor.execute('INSERT INTO Exploracion (id_expediente, Peso, Altura, Temperatura, LatMinutos, SatOxi, Glucosa, Edad) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)', (id, fpeso, faltura, ftemperatura, flat, fsatu, fglucosa, fedad))
-        mysql.connection.commit()
-        cursor.close()
-        
-        flash('Exploración agregada correctamente', 'success')
-        return redirect(url_for('menuPaciente'))
-
-@app.route('/expedientePaciente')
-def expedientePaciente():
-    return render_template('expedientePaciente.html')
+@app.route('/buscarexpediente')
+def buscarexpediente():
+    return render_template('buscarexpediente.html')
 
 @app.route('/citaPaciente')
 def citaPaciente():
