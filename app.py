@@ -3,8 +3,8 @@ from flask_mysqldb import MySQL
 
 app = Flask(__name__, template_folder='template')
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_USER'] = 'mich'
+app.config['MYSQL_PASSWORD'] = 'mich'
 app.config['MYSQL_DB'] = 'db_clinicamayo'
 app.secret_key = 'mysecretkey'
 mysql = MySQL(app)
